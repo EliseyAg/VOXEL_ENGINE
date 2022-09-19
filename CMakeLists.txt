@@ -8,3 +8,8 @@ add_executable(${PROJECT_NAME}
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+
+add_subdirectory(external/glfw ${CMAKE_CURRENT_BINARY_DIR}/glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
