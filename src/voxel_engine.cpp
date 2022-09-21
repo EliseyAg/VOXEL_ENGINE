@@ -1,37 +1,21 @@
-#include <iostream>
+#include "Window/Window.hpp"
 
-#include <GLFW/glfw3.h>
+#include <iostream>
 
 int WIDTH = 1280;
 int HEIGHT = 720;
 
 int main()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	Window::initialize(WIDTH, HEIGHT, "Game");
 
-	GLFWwindow* pWindow = glfwCreateWindow(WIDTH, HEIGHT, "Window", nullptr, nullptr);
-	if (pWindow == nullptr)
+	while (!Window::isShouldClose())
 	{
-		std::cerr << "Failed to create GLFW Window" << std::endl;
-		glfwTerminate();
-		return -1;
+		Window::PollEvents();
+		Window::SwapBuffers();
 	}
 
-	glfwMakeContextCurrent(pWindow);
-
-	//glViewport(0, 0, WIDTH, HEIGHT);
-
-	while (!glfwWindowShouldClose(pWindow))
-	{
-		glfwPollEvents();
-		glfwSwapBuffers(pWindow);
-	}
-
-	glfwTerminate();
+	Window::finitialize();
 
 	return 0;
 }

@@ -4,6 +4,9 @@ set(PROJECT_NAME VoxelEngine)
 project(${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}
+	src/Window/Window.hpp
+	src/Window/Window.cpp
+
 	src/voxel_engine.cpp
 )
 
