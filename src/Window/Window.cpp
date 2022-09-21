@@ -22,6 +22,7 @@ int Window::initialize(int width, int height, const char* title)
 	}
 
 	glfwMakeContextCurrent(pWindow);
+	return 0;
 }
 
 void Window::finitialize()
@@ -34,12 +35,11 @@ bool Window::isShouldClose()
 	return glfwWindowShouldClose(pWindow);
 }
 
-void Window::PollEvents()
-{
-	glfwPollEvents();
+void Window::setShouldClose(bool flag) {
+	glfwSetWindowShouldClose(pWindow, flag);
 }
 
-void Window::SwapBuffers()
+void Window::swapBuffers()
 {
 	glfwSwapBuffers(pWindow);
 }

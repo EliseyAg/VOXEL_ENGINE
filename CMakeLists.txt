@@ -6,6 +6,9 @@ project(${PROJECT_NAME})
 add_executable(${PROJECT_NAME}
 	src/Window/Window.hpp
 	src/Window/Window.cpp
+	
+	src/Window/Events.hpp
+	src/Window/Events.cpp
 
 	src/voxel_engine.cpp
 )
