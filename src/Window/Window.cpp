@@ -4,14 +4,18 @@
 #include <iostream>
 
 GLFWwindow* Window::pWindow;
+unsigned int Window::m_width = 0;
+unsigned int Window::m_height = 0;
 
 int Window::initialize(int width, int height, const char* title)
 {
+	m_width = width;
+	m_height = height;
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	pWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (pWindow == nullptr)
@@ -23,6 +27,10 @@ int Window::initialize(int width, int height, const char* title)
 
 	glfwMakeContextCurrent(pWindow);
 	return 0;
+}
+
+void Window::setCursorMode(int mode) {
+	glfwSetInputMode(pWindow, GLFW_CURSOR, mode);
 }
 
 void Window::finitialize()

@@ -1,5 +1,6 @@
 #include "Events.hpp"
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string.h>
 
@@ -49,6 +50,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
+void window_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+	Window::m_width = width;
+	Window::m_height = height;
+}
+
 int Events::initialize()
 {
 	GLFWwindow* pWindow = Window::pWindow;
@@ -61,6 +68,8 @@ int Events::initialize()
 	glfwSetKeyCallback(pWindow, key_callback);
 	glfwSetMouseButtonCallback(pWindow, mouse_button_callback);
 	glfwSetCursorPosCallback(pWindow, cursor_position_callback);
+	glfwSetWindowSizeCallback(pWindow, window_size_callback);
+
 	return 0;
 }
 
@@ -89,6 +98,11 @@ bool Events::clicked(int button) {
 bool Events::jclicked(int button) {
 	int index = _MOUSE_BUTTONS + button;
 	return _keys[index] && _frames[index] == _current_frame;
+}
+
+void Events::toogleCursor() {
+	_cursor_locked = !_cursor_locked;
+	Window::setCursorMode(_cursor_locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 void Events::pollEvents()

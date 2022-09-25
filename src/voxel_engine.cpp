@@ -2,11 +2,14 @@
 #include "Window/Events.hpp"
 #include "Graphics/ShaderProgram.hpp"
 #include "Graphics/Texture.hpp"
+#include "Camera/Camera.hpp"
 #include "Loaders/png_loader.hpp"
 
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -72,9 +75,25 @@ int main(int argc, char** argv)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	Camera* camera = new Camera(glm::vec3(0, 0, 1), glm::radians(60.f));
+
+	glm::mat4 model(1.0f);
+
+	float lastTime = glfwGetTime();
+	float delta = 0.0f;
+
+	float speed = 5;
+
+	float camX = 0;
+	float camY = 0;
+
 	while (!Window::isShouldClose())
 	{
-		Events::pollEvents();
+		float currentTime = glfwGetTime();
+		delta = currentTime - lastTime;
+
+		lastTime = currentTime;
+
 		if (Events::jpressed(GLFW_KEY_ESCAPE))
 		{
 			Window::setShouldClose(true);
@@ -83,14 +102,53 @@ int main(int argc, char** argv)
 		{
 			glClearColor(0.8f, 0.4f, 0.2f, 1);
 		}
+		if (Events::pressed(GLFW_KEY_TAB))
+		{
+			Events::toogleCursor();
+		}
+		if (Events::pressed(GLFW_KEY_W))
+		{
+			camera->position += camera->front * delta * speed;
+		}
+		if (Events::pressed(GLFW_KEY_S))
+		{
+			camera->position -= camera->front * delta * speed;
+		}
+		if (Events::pressed(GLFW_KEY_A))
+		{
+			camera->position -= camera->right * delta * speed;
+		}
+		if (Events::pressed(GLFW_KEY_D))
+		{
+			camera->position += camera->right * delta * speed;
+		}
+		camY += -Events::deltaY / Window::m_height;
+		camX += -Events::deltaX / Window::m_height;
+
+		if (camY < -glm::radians(89.0f))
+		{
+			camY = -glm::radians(89.0f);
+		}
+		if (camY > glm::radians(89.0f))
+		{
+			camY = glm::radians(89.0f);
+		}
+
+		camera->rotation = glm::mat4(1.0f);
+		camera->rotate(camY, camX, 0);
+
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader->bind();
+		shader->setMat4("u_model", model);
+		shader->setMat4("u_projview", camera->getProjection() * camera->getView());
 		texture->bind();
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
 		Window::swapBuffers();
+		Events::pollEvents();
 	}
 
 	delete shader;

@@ -1,6 +1,7 @@
 #include "ShaderProgram.hpp"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <exception>
 #include <fstream>
@@ -21,6 +22,12 @@ ShaderProgram::~ShaderProgram()
 void ShaderProgram::bind()
 {
 	glUseProgram(m_id);
+}
+
+void ShaderProgram::setMat4(std::string name, glm::mat4& matrix)
+{
+	GLuint transformLoc = glGetUniformLocation(m_id, name.c_str());
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 ShaderProgram* load_shader(std::string vertexFile, std::string fragmentFile) {

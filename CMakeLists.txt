@@ -6,9 +6,11 @@ project(${PROJECT_NAME})
 add_executable(${PROJECT_NAME}
 	src/Window/Window.hpp
 	src/Window/Window.cpp
-	
 	src/Window/Events.hpp
 	src/Window/Events.cpp
+	
+	src/Camera/Camera.hpp
+	src/Camera/Camera.cpp
 	
 	src/Graphics/ShaderProgram.hpp
 	src/Graphics/ShaderProgram.cpp
@@ -35,3 +37,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
 add_subdirectory(external/glad ${CMAKE_CURRENT_BINARY_DIR}/glad)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad)
+
+add_subdirectory(../Minecraft/external/glm ${CMAKE_CURRENT_BINARY_DIR}/glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC glm)
