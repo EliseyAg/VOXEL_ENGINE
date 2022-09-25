@@ -16,6 +16,15 @@ add_executable(${PROJECT_NAME}
 	src/Graphics/ShaderProgram.cpp
 	src/Graphics/Texture.hpp
 	src/Graphics/Texture.cpp
+	src/Graphics/Mesh.hpp
+	src/Graphics/Mesh.cpp
+	src/Graphics/VoxelRenderer.hpp
+	src/Graphics/VoxelRenderer.cpp
+	
+	src/Voxels/Voxel.hpp
+	src/Voxels/Voxel.cpp
+	src/Voxels/Chunk.hpp
+	src/Voxels/Chunk.cpp
 	
 	src/Loaders/png_loader.hpp
 	src/Loaders/png_loader.cpp

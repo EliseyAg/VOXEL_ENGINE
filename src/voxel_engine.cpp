@@ -2,8 +2,11 @@
 #include "Window/Events.hpp"
 #include "Graphics/ShaderProgram.hpp"
 #include "Graphics/Texture.hpp"
+#include "Graphics/Mesh.hpp"
+#include "Graphics/VoxelRenderer.hpp"
 #include "Camera/Camera.hpp"
 #include "Loaders/png_loader.hpp"
+#include "Voxels/Chunk.hpp"
 
 #include <iostream>
 #include <glad/glad.h>
@@ -23,6 +26,10 @@ float vertices[] = {
 	1.0f,-1.0f, 0.0f, 1.0f, 0.0f,
 	1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
    -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+};
+
+int attrs[] = {
+	3,2, 0
 };
 
 int main(int argc, char** argv)
@@ -45,7 +52,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	Texture* texture = load_texture(m_path + "/" + "res/textures/img.png");
+	Texture* texture = load_texture(m_path + "/" + "res/textures/blocks.png");
 	if (texture == nullptr) {
 		std::cerr << "failed to load texture" << std::endl;
 		delete shader;
@@ -53,29 +60,18 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	// Create VAO
-	GLuint VAO, VBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	glBindVertexArray(0);
+	VoxelRenderer renderer(1024*1024*8);
+	Chunk* chunk = new Chunk();
+	Mesh* mesh = renderer.render(chunk);
 
 	glClearColor(0.6f, 0.62f, 0.65f, 1);
 
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	Camera* camera = new Camera(glm::vec3(0, 0, 1), glm::radians(60.f));
+	Camera* camera = new Camera(glm::vec3(0, 2, -2), glm::radians(60.f));
 
 	glm::mat4 model(1.0f);
 
@@ -122,30 +118,32 @@ int main(int argc, char** argv)
 		{
 			camera->position += camera->right * delta * speed;
 		}
-		camY += -Events::deltaY / Window::m_height;
-		camX += -Events::deltaX / Window::m_height;
 
-		if (camY < -glm::radians(89.0f))
+		if (Events::_cursor_locked)
 		{
-			camY = -glm::radians(89.0f);
-		}
-		if (camY > glm::radians(89.0f))
-		{
-			camY = glm::radians(89.0f);
+			camY += -Events::deltaY / Window::m_height;
+			camX += -Events::deltaX / Window::m_height;
+
+			if (camY < -glm::radians(89.0f))
+			{
+				camY = -glm::radians(89.0f);
+			}
+			if (camY > glm::radians(89.0f))
+			{
+				camY = glm::radians(89.0f);
+			}
+
+			camera->rotation = glm::mat4(1.0f);
+			camera->rotate(camY, camX, 0);
 		}
 
-		camera->rotation = glm::mat4(1.0f);
-		camera->rotate(camY, camX, 0);
-
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader->bind();
 		shader->setMat4("u_model", model);
 		shader->setMat4("u_projview", camera->getProjection() * camera->getView());
 		texture->bind();
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
+		mesh->draw(GL_TRIANGLES);
 
 		Window::swapBuffers();
 		Events::pollEvents();
@@ -153,8 +151,6 @@ int main(int argc, char** argv)
 
 	delete shader;
 	delete texture;
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
 
 	Window::finitialize();
 
