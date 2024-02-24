@@ -11,9 +11,11 @@ set(PUBLIC_INCLUDES
 	src/Events/Event.hpp
 
 	src/Rendering/OpenGL/Window.hpp
+	src/Rendering/OpenGL/ShaderProgram.hpp
 )
 set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/Window.cpp
+	src/Rendering/OpenGL/ShaderProgram.cpp
 )
 set(ALL_SOURCES
 	${PUBLIC_INCLUDES}

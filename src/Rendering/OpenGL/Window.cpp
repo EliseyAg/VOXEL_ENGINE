@@ -1,4 +1,6 @@
 #include "Window.hpp"
+#include "ShaderProgram.hpp"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
@@ -37,8 +39,8 @@ namespace Rendering
         "   frag_color = vec4(color, 1.0);"
         "}";
 
-    GLuint shader_program;
     GLuint vao;
+    std::shared_ptr<ShaderProgram> m_pShaderProgram;
 
     Window::Window(std::string title, const unsigned int width, const unsigned int height)
         : m_data({ std::move(title), width, height })
@@ -117,21 +119,14 @@ namespace Rendering
         glViewport(0, 0, m_data.width, m_data.height);
         glClearColor(1, 1, 0, 1);
 
-        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vs, 1, &vertex_shader, nullptr);
-        glCompileShader(vs);
-
-        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fs, 1, &fragment_shader, nullptr);
-        glCompileShader(fs);
-
-        shader_program = glCreateProgram();
-        glAttachShader(shader_program, vs);
-        glAttachShader(shader_program, fs);
-        glLinkProgram(shader_program);
-
-        glDeleteShader(vs);
-        glDeleteShader(fs);
+        std::string vertexShader(vertex_shader);
+        std::string fragmentShader(fragment_shader);
+        m_pShaderProgram = std::make_shared<ShaderProgram>(vertexShader, fragmentShader);
+        if (!m_pShaderProgram->isCompiled())
+        {
+            std::cerr << "Can't create shader program!" << std::endl;
+            return -1;
+        }
 
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
@@ -169,7 +164,7 @@ namespace Rendering
         glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shader_program);
+        m_pShaderProgram->bind();
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
