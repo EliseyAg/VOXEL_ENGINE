@@ -8,10 +8,10 @@ add_executable(${PROJECT_NAME}
 )
 
 set(PUBLIC_INCLUDES
-	
+	src/Rendering/OpenGL/Window.hpp
 )
 set(PUBLIC_SOURCES
-	
+	src/Rendering/OpenGL/Window.cpp
 )
 set(ALL_SOURCES
 	${PUBLIC_INCLUDES}

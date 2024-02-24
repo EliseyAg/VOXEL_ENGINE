@@ -1,38 +1,16 @@
 #include <iostream>
 #include "GLFW/glfw3.h"
+#include "Rendering/OpenGL/Window.hpp"
+#include <memory>
 
 int main()
 {
-    GLFWwindow* window;
+    std::unique_ptr<Rendering::Window> m_Window = std::make_unique<Rendering::Window>("Hello World", 640, 480);
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
+    while (true)
     {
-        glfwTerminate();
-        return -1;
+       m_Window->on_update();
     }
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        //glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
     return 0;
 }
