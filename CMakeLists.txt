@@ -35,3 +35,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAK
 
 add_subdirectory(external/glfw ${CMAKE_CURRENT_BINARY_DIR}/glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+
+add_subdirectory(external/glad ${CMAKE_CURRENT_BINARY_DIR}/glad)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad)

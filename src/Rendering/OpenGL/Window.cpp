@@ -1,4 +1,5 @@
 #include "Window.hpp"
+#include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
 
@@ -72,6 +73,14 @@ namespace Rendering
             }
         );
 
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cout << "Failed to initialize GLAD" << std::endl;
+            return -1;
+        }
+
+        glViewport(0, 0, m_data.width, m_data.height);
+
         return 0;
     }
 
@@ -83,6 +92,8 @@ namespace Rendering
 
     void Window::on_update()
     {
+        glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         glfwSwapBuffers(m_pWindow);
         glfwPollEvents();
     }
