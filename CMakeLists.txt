@@ -8,6 +8,8 @@ add_executable(${PROJECT_NAME}
 )
 
 set(PUBLIC_INCLUDES
+	src/Events/Event.hpp
+
 	src/Rendering/OpenGL/Window.hpp
 )
 set(PUBLIC_SOURCES

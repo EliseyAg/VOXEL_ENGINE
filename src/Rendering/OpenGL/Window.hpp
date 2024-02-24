@@ -1,5 +1,9 @@
 #pragma once
+
+#include "../../Events/Event.hpp"
+
 #include <string>
+#include <memory>
 
 class GLFWwindow;
 
@@ -8,6 +12,8 @@ namespace Rendering
 	class Window
 	{
 	public:
+		using EventCallbackFn = std::function<void(Events::BaseEvent&)>;
+
 		Window(std::string title, const unsigned int width, const unsigned int height);
 		~Window();
 
@@ -17,6 +23,13 @@ namespace Rendering
 		Window& operator=(Window&&) = delete;
 
 		void on_update();
+		unsigned int get_width() const { return m_data.width; }
+		unsigned int get_height() const { return m_data.height; }
+
+		void set_event_callback(const EventCallbackFn& callback)
+		{
+			m_data.eventCallbackFn = callback;
+		}
 
 	private:
 		struct WindowData
@@ -24,6 +37,7 @@ namespace Rendering
 			std::string title;
 			unsigned int width;
 			unsigned int height;
+			EventCallbackFn eventCallbackFn;
 		};
 
 		int init();

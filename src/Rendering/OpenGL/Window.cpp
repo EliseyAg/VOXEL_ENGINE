@@ -1,5 +1,6 @@
 #include "Window.hpp"
 #include "GLFW/glfw3.h"
+#include <iostream>
 
 namespace Rendering
 {
@@ -31,12 +32,45 @@ namespace Rendering
 
         if (!m_pWindow)
         {
+            std::cout << "Can't create window\n";
             glfwTerminate();
             return -2;
         }
 
         glfwMakeContextCurrent(m_pWindow);
         glfwSetWindowUserPointer(m_pWindow, &m_data);
+
+        glfwSetWindowSizeCallback(m_pWindow,
+            [](GLFWwindow* pWindow, int width, int height)
+            {
+                WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(pWindow));
+                data.width = width;
+                data.height = height;
+
+                Events::EventWindowResize event(width, height);
+                data.eventCallbackFn(event);
+            }
+        );
+
+        glfwSetCursorPosCallback(m_pWindow,
+            [](GLFWwindow* pWindow, double x, double y)
+            {
+                WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(pWindow));
+
+                Events::EventMouseMoved event(x, y);
+                data.eventCallbackFn(event);
+            }
+        );
+
+        glfwSetWindowCloseCallback(m_pWindow,
+            [](GLFWwindow* pWindow)
+            {
+                WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(pWindow));
+
+                Events::EventWindowClose event;
+                data.eventCallbackFn(event);
+            }
+        );
 
         return 0;
     }
