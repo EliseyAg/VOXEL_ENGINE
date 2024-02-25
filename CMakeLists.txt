@@ -11,8 +11,10 @@ set(PUBLIC_INCLUDES
 	src/Events/Event.hpp
 	
 	src/Resources/ResourceManager.hpp
+	src/Resources/stb_image.h
 
 	src/Rendering/OpenGL/Window.hpp
+	src/Rendering/OpenGL/Texture2D.hpp
 	src/Rendering/OpenGL/ShaderProgram.hpp
 )
 
@@ -20,6 +22,7 @@ set(PUBLIC_SOURCES
 	src/Resources/ResourceManager.cpp
 
 	src/Rendering/OpenGL/Window.cpp
+	src/Rendering/OpenGL/Texture2D.cpp
 	src/Rendering/OpenGL/ShaderProgram.cpp
 )
 

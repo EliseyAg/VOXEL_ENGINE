@@ -19,6 +19,8 @@ namespace Rendering
 		bool isCompiled() const { return m_isCompiled; }
 		void bind() const;
 
+		void setInt(const std::string& name, const GLint value);
+
 	private:
 		bool createShader(const std::string& source, const GLenum shaderType, GLuint& shaderID);
 

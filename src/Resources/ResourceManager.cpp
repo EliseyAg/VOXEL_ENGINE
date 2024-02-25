@@ -1,13 +1,19 @@
 #include "ResourceManager.hpp"
 #include "../Rendering/OpenGL/ShaderProgram.hpp"
+#include "../Rendering/OpenGL/Texture2D.hpp"
 
 #include <sstream>
 #include <fstream>
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#include "stb_image.h"
+
 namespace Resources
 {
     ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
+    ResourceManager::TexturesMap ResourceManager::m_textures;
 
     std::string ResourceManager::m_path;
 
@@ -70,6 +76,37 @@ namespace Resources
             return it->second;
         }
         std::cerr << "Can't find the shader program: " << shaderName << std::endl;
+        return nullptr;
+    }
+
+    std::shared_ptr<Rendering::Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
+    {
+        int channels = 0;
+        int width = 0;
+        int height = 0;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, 0);
+
+        if (!pixels)
+        {
+            std::cerr << "Can't load image: " << texturePath << std::endl;
+            return nullptr;
+        }
+
+        std::shared_ptr<Rendering::Texture2D> newTexture = m_textures.emplace(textureName, std::make_shared<Rendering::Texture2D>(width, height, pixels, channels, GL_NEAREST, GL_CLAMP_TO_EDGE)).first->second;
+
+        stbi_image_free(pixels);
+        return newTexture;
+    }
+
+    std::shared_ptr<Rendering::Texture2D> ResourceManager::getTexture(const std::string& textureName)
+    {
+        TexturesMap::const_iterator it = m_textures.find(textureName);
+        if (it != m_textures.end())
+        {
+            return it->second;
+        }
+        std::cerr << "Can't find the texture: " << textureName << std::endl;
         return nullptr;
     }
 }
