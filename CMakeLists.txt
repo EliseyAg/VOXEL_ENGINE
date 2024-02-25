@@ -16,6 +16,10 @@ set(PUBLIC_INCLUDES
 	src/Rendering/OpenGL/Window.hpp
 	src/Rendering/OpenGL/Texture2D.hpp
 	src/Rendering/OpenGL/ShaderProgram.hpp
+	src/Rendering/OpenGL/IndexBuffer.hpp
+	src/Rendering/OpenGL/VertexBuffer.hpp
+	src/Rendering/OpenGL/VertexArray.hpp
+	src/Rendering/OpenGL/VertexBufferLayout.hpp
 )
 
 set(PUBLIC_SOURCES
@@ -24,6 +28,10 @@ set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/Window.cpp
 	src/Rendering/OpenGL/Texture2D.cpp
 	src/Rendering/OpenGL/ShaderProgram.cpp
+	src/Rendering/OpenGL/IndexBuffer.cpp
+	src/Rendering/OpenGL/VertexBuffer.cpp
+	src/Rendering/OpenGL/VertexArray.cpp
+	src/Rendering/OpenGL/VertexBufferLayout.cpp
 )
 
 set(ALL_SOURCES
