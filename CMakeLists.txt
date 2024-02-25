@@ -9,14 +9,20 @@ add_executable(${PROJECT_NAME}
 
 set(PUBLIC_INCLUDES
 	src/Events/Event.hpp
+	
+	src/Resources/ResourceManager.hpp
 
 	src/Rendering/OpenGL/Window.hpp
 	src/Rendering/OpenGL/ShaderProgram.hpp
 )
+
 set(PUBLIC_SOURCES
+	src/Resources/ResourceManager.cpp
+
 	src/Rendering/OpenGL/Window.cpp
 	src/Rendering/OpenGL/ShaderProgram.cpp
 )
+
 set(ALL_SOURCES
 	${PUBLIC_INCLUDES}
 	${PUBLIC_SOURCES}
@@ -34,6 +40,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC source)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+					COMMAND ${CMAKE_COMMAND} -E copy_directory
+					${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:${PROJECT_NAME}>/res)
 
 add_subdirectory(external/glfw ${CMAKE_CURRENT_BINARY_DIR}/glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
