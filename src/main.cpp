@@ -13,21 +13,14 @@
 
 
 GLfloat vertexCoords[] = {
-  -0.5f, -0.5f,  0.f,
-  -0.5f,  0.5f,  0.f,
-   0.5f,  0.5f,  0.f,
-   0.5f, -0.5f,  0.f
+  -0.5f, -0.5f,  0.0f,
+  -0.5f,  0.5f,  0.0f,
+   0.5f,  0.5f,  0.0f,
+   0.5f, -0.5f,  0.0f
 };
 
 const GLuint indices[] = {
             0, 1, 2, 2, 3, 0
-};
-
-GLfloat textureCoords[] = {
-    0.0f, 0.0f,
-    0.0f, 1.0f,
-    1.0f, 1.0f,
-    1.0f, 0.0f
 };
 
 glm::ivec2 g_windowSize(720, 720);
@@ -71,7 +64,17 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    auto tex = Resources::ResourceManager::loadTexture("DefaultTexture", "res/textures/Blocks.png");
+    std::vector<std::string> subTexturesNames = { "GrassTop", "Grass", "Dirt", "Coblestone", "WoodTop", "Wood", "Pusto", "Pusto", "Lystya", "No" };
+    auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 64, 64);
+
+    auto subTexture = pTexture->getSubTexture(std::move("GrassTop"));
+    const GLfloat textureCoords[] = {
+        // U  V
+        subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+        subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
+        subTexture.rightTopUV.x, subTexture.rightTopUV.y,
+        subTexture.rightTopUV.x, subTexture.leftBottomUV.y
+    };
 
     Rendering::VertexBuffer m_vertexCoordsBuffer;
     Rendering::VertexBuffer m_textureCoordsBuffer;
@@ -106,7 +109,7 @@ int main(int argc, char** argv)
        m_vertexArray.bind();
        m_indexBuffer.bind();
 
-       tex->bind();
+       pTexture->bind();
 
        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 

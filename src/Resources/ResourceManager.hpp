@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 #include <map>
 
 namespace Rendering
@@ -29,6 +30,11 @@ namespace Resources
 
 		static std::shared_ptr<Rendering::Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
 		static std::shared_ptr<Rendering::Texture2D> getTexture(const std::string& textureName);
+		static std::shared_ptr<Rendering::Texture2D> loadTextureAtlas(const std::string textureName,
+																	  const std::string texturePath,
+																	  const std::vector<std::string> subTextures,
+																	  const unsigned int subTextureWidth,
+																	  const unsigned int subTextureHeight);
 
 	private:
 		static std::string getFileString(const std::string& relativeFilePath);

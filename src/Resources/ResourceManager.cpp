@@ -109,4 +109,34 @@ namespace Resources
         std::cerr << "Can't find the texture: " << textureName << std::endl;
         return nullptr;
     }
+
+    std::shared_ptr<Rendering::Texture2D> ResourceManager::loadTextureAtlas(const std::string textureName,
+        const std::string texturePath,
+        const std::vector<std::string> subTextures,
+        const unsigned int subTextureWidth,
+        const unsigned int subTextureHeight)
+    {
+        auto pTexture = loadTexture(std::move(textureName), std::move(texturePath));
+        if (pTexture)
+        {
+            const unsigned int textureWidth = pTexture->width();
+            const unsigned int textureHeight = pTexture->height();
+            unsigned int currentTextureOffsetX = 0;
+            unsigned int currentTextureOffsetY = textureHeight;
+            for (const auto& currentSubTextureName : subTextures)
+            {
+                glm::vec2 leftBottomUV(static_cast<float>(currentTextureOffsetX) / textureWidth, static_cast<float>(currentTextureOffsetY - subTextureHeight) / textureHeight);
+                glm::vec2 rightTopUV(static_cast<float>(currentTextureOffsetX + subTextureWidth) / textureWidth, static_cast<float>(currentTextureOffsetY) / textureHeight);
+                pTexture->addSubTexture(std::move(currentSubTextureName), leftBottomUV, rightTopUV);
+
+                currentTextureOffsetX += subTextureWidth;
+                if (currentTextureOffsetX >= textureWidth)
+                {
+                    currentTextureOffsetX = 0;
+                    currentTextureOffsetY -= subTextureHeight;
+                }
+            }
+        }
+        return pTexture;
+    }
 }
