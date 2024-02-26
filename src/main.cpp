@@ -8,6 +8,8 @@
 #include "Rendering/OpenGL/Camera.hpp"
 #include "Resources/ResourceManager.hpp"
 #include "Events/Event.hpp"
+#include "Events/Input.hpp"
+#include "Events/Keys.hpp"
 
 #include <memory>
 #include <iostream>
@@ -69,6 +71,33 @@ int main(int argc, char** argv)
         }
     );
 
+    m_event_dispatcher.add_event_listener<Events::EventKeyPressed>(
+        [&](Events::EventKeyPressed& event)
+        {
+            if (event.key_code <= Events::KeyCode::KEY_Z)
+            {
+                if (event.repeated)
+                {
+                    //std::cout << "KeyPressed, Repeated" << std::endl;
+                }
+                else
+                {
+                    //std::cout << "KeyPressed" << std::endl;
+                }
+            }
+            Events::Input::PressKey(event.key_code);
+        });
+
+    m_event_dispatcher.add_event_listener<Events::EventKeyReleased>(
+        [&](Events::EventKeyReleased& event)
+        {
+            if (event.key_code <= Events::KeyCode::KEY_Z)
+            {
+                
+            }
+            Events::Input::ReleaseKey(event.key_code);
+        });
+
     auto pDefaultShaderProgram = Resources::ResourceManager::loadShaderProgram("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
     if (!pDefaultShaderProgram)
     {
@@ -114,6 +143,31 @@ int main(int argc, char** argv)
     {
        Rendering::Renderer::setClearColor(1.0f, 1.0f, 0.0f, 1.0f);
        Rendering::Renderer::clear();
+
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))
+       {
+           camera_position[2] += -0.001f;
+       }
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_A))
+       {
+           camera_position[0] += -0.001f;
+       }
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))
+       {
+           camera_position[2] +=  0.001f;
+       }
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_D))
+       {
+           camera_position[0] +=  0.001f;
+       }
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_Q))
+       {
+           camera_position[1] +=  0.001f;
+       }
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_E))
+       {
+           camera_position[1] += -0.001f;
+       }
 
        glm::mat4 scale_matrix(scale[0], 0, 0, 0,
            0, scale[1], 0, 0,

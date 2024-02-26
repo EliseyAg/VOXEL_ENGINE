@@ -74,6 +74,34 @@ namespace Rendering
             }
         );
 
+        glfwSetKeyCallback(m_pWindow,
+            [](GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+            {
+                WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(pWindow));
+        switch (action)
+        {
+        case GLFW_PRESS:
+        {
+            Events::EventKeyPressed event(static_cast<Events::KeyCode>(key), false);
+            data.eventCallbackFn(event);
+            break;
+        }
+        case GLFW_RELEASE:
+        {
+            Events::EventKeyReleased event(static_cast<Events::KeyCode>(key));
+            data.eventCallbackFn(event);
+            break;
+        }
+        case GLFW_REPEAT:
+        {
+            Events::EventKeyPressed event(static_cast<Events::KeyCode>(key), true);
+            data.eventCallbackFn(event);
+            break;
+        }
+        }
+            }
+        );
+
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD" << std::endl;

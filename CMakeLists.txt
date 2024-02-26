@@ -9,6 +9,8 @@ add_executable(${PROJECT_NAME}
 
 set(PUBLIC_INCLUDES
 	src/Events/Event.hpp
+	src/Events/Keys.hpp
+	src/Events/Input.hpp
 	
 	src/Resources/ResourceManager.hpp
 	src/Resources/stb_image.hpp
@@ -25,6 +27,8 @@ set(PUBLIC_INCLUDES
 )
 
 set(PUBLIC_SOURCES
+	src/Events/Input.cpp
+
 	src/Resources/ResourceManager.cpp
 
 	src/Rendering/OpenGL/Window.cpp
