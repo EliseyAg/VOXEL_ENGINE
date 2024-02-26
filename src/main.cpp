@@ -5,10 +5,10 @@
 #include "Rendering/OpenGL/VertexBuffer.hpp"
 #include "Rendering/OpenGL/IndexBuffer.hpp"
 #include "Rendering/OpenGL/VertexArray.hpp"
+#include "Rendering/OpenGL/Renderer.hpp"
 #include "Resources/ResourceManager.hpp"
 #include "Events/Event.hpp"
 #include <memory>
-#include "glad/glad.h"
 #include <glm/vec2.hpp>
 
 
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
         {
             g_windowSize.x = event.width;
             g_windowSize.y = event.height;
-            glViewport(0, 0, event.width, event.height);
+            Rendering::Renderer::setViewport(0, 0, event.width, event.height);
         }
     );
 
@@ -101,17 +101,12 @@ int main(int argc, char** argv)
 
     while (!m_bCloseWindow)
     {
-       glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
-       glClear(GL_COLOR_BUFFER_BIT);
-
-       pDefaultShaderProgram->bind();
-
-       m_vertexArray.bind();
-       m_indexBuffer.bind();
+       Rendering::Renderer::setClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+       Rendering::Renderer::clear();
 
        pTexture->bind();
 
-       glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+       Rendering::Renderer::draw(m_vertexArray, m_indexBuffer, *pDefaultShaderProgram);
 
        m_vertexArray.unbind();
 

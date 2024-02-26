@@ -2,8 +2,10 @@
 #include "VertexBuffer.hpp"
 #include "VertexBufferLayout.hpp"
 
-namespace Rendering {
-    class VertexArray {
+namespace Rendering
+{
+    class VertexArray
+    {
     public:
         VertexArray();
         ~VertexArray();

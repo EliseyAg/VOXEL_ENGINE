@@ -11,7 +11,7 @@ set(PUBLIC_INCLUDES
 	src/Events/Event.hpp
 	
 	src/Resources/ResourceManager.hpp
-	src/Resources/stb_image.h
+	src/Resources/stb_image.hpp
 
 	src/Rendering/OpenGL/Window.hpp
 	src/Rendering/OpenGL/Texture2D.hpp
@@ -20,6 +20,7 @@ set(PUBLIC_INCLUDES
 	src/Rendering/OpenGL/VertexBuffer.hpp
 	src/Rendering/OpenGL/VertexArray.hpp
 	src/Rendering/OpenGL/VertexBufferLayout.hpp
+	src/Rendering/OpenGL/Renderer.hpp
 )
 
 set(PUBLIC_SOURCES
@@ -32,6 +33,7 @@ set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/VertexBuffer.cpp
 	src/Rendering/OpenGL/VertexArray.cpp
 	src/Rendering/OpenGL/VertexBufferLayout.cpp
+	src/Rendering/OpenGL/Renderer.cpp
 )
 
 set(ALL_SOURCES

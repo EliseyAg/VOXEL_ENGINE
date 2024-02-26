@@ -3,9 +3,10 @@
 
 #include <glad/glad.h>
 
-namespace Rendering {
-
-    class IndexBuffer {
+namespace Rendering
+{
+    class IndexBuffer
+    {
     public:
         IndexBuffer();
         ~IndexBuffer();
