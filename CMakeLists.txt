@@ -21,6 +21,7 @@ set(PUBLIC_INCLUDES
 	src/Rendering/OpenGL/VertexArray.hpp
 	src/Rendering/OpenGL/VertexBufferLayout.hpp
 	src/Rendering/OpenGL/Renderer.hpp
+	src/Rendering/OpenGL/Camera.hpp
 )
 
 set(PUBLIC_SOURCES
@@ -34,6 +35,7 @@ set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/VertexArray.cpp
 	src/Rendering/OpenGL/VertexBufferLayout.cpp
 	src/Rendering/OpenGL/Renderer.cpp
+	src/Rendering/OpenGL/Camera.cpp
 )
 
 set(ALL_SOURCES

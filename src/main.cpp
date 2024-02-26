@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Rendering/OpenGL/Window.hpp"
 #include "Rendering/OpenGL/ShaderProgram.hpp"
 #include "Rendering/OpenGL/Texture2D.hpp"
@@ -6,9 +5,12 @@
 #include "Rendering/OpenGL/IndexBuffer.hpp"
 #include "Rendering/OpenGL/VertexArray.hpp"
 #include "Rendering/OpenGL/Renderer.hpp"
+#include "Rendering/OpenGL/Camera.hpp"
 #include "Resources/ResourceManager.hpp"
 #include "Events/Event.hpp"
+
 #include <memory>
+#include <iostream>
 #include <glm/vec2.hpp>
 
 
@@ -27,6 +29,16 @@ glm::ivec2 g_windowSize(720, 720);
 
 int main(int argc, char** argv)
 {
+    float scale[3] = { 1.f, 1.f, 1.f };
+    float rotate = 0.f;
+    float translate[3] = { 0.f, 0.f, 0.f };
+
+    float camera_position[3] = { 0.f, 0.f, 1.f };
+    float camera_rotation[3] = { 0.f, 0.f, 0.f };
+    bool perspective_camera = true;
+
+    Rendering::Camera camera;
+
     Resources::ResourceManager::init(argv[0]);
 
     std::unique_ptr<Rendering::Window> m_pWindow = std::make_unique<Rendering::Window>("VOXEL_ENGINE", g_windowSize.x, g_windowSize.y);
@@ -98,11 +110,31 @@ int main(int argc, char** argv)
 
     pDefaultShaderProgram->bind();
 
-
     while (!m_bCloseWindow)
     {
        Rendering::Renderer::setClearColor(1.0f, 1.0f, 0.0f, 1.0f);
        Rendering::Renderer::clear();
+
+       glm::mat4 scale_matrix(scale[0], 0, 0, 0,
+           0, scale[1], 0, 0,
+           0, 0, scale[2], 0,
+           0, 0, 0, 1);
+       float rotate_in_radians = glm::radians(rotate);
+       glm::mat4 rotate_matrix(cos(rotate_in_radians), sin(rotate_in_radians), 0, 0,
+           -sin(rotate_in_radians), cos(rotate_in_radians), 0, 0,
+           0, 0, 1, 0,
+           0, 0, 0, 1);
+       glm::mat4 translate_matrix(1, 0, 0, 0,
+           0, 1, 0, 0,
+           0, 0, 1, 0,
+           translate[0], translate[1], translate[2], 1);
+       glm::mat4 model_matrix = translate_matrix * rotate_matrix * scale_matrix;
+       pDefaultShaderProgram->setMatrix4("model_matrix", model_matrix);
+
+       camera.set_position_rotation(glm::vec3(camera_position[0], camera_position[1], camera_position[2]),
+           glm::vec3(camera_rotation[0], camera_rotation[1], camera_rotation[2]));
+       camera.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
+       pDefaultShaderProgram->setMatrix4("view_projection_matrix", camera.get_projection_matrix() * camera.get_view_matrix());
 
        pTexture->bind();
 

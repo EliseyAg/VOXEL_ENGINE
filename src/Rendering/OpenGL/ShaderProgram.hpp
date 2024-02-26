@@ -1,5 +1,8 @@
 #pragma once
 #include "glad/glad.h"
+#include "glm/mat4x4.hpp"
+#include "glm/vec3.hpp"
+#include <glm/gtc/type_ptr.hpp>
 #include <string>
 
 namespace Rendering
@@ -20,6 +23,8 @@ namespace Rendering
 		void bind() const;
 
 		void setInt(const std::string& name, const GLint value);
+		void setVec3(const std::string& name, const glm::vec3& value);
+		void setMatrix4(const char* name, const glm::mat4& matrix) const;
 
 	private:
 		bool createShader(const std::string& source, const GLenum shaderType, GLuint& shaderID);
