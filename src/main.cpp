@@ -17,17 +17,29 @@
 
 
 GLfloat vertexCoords[] = {
-  -0.5f, -0.5f,  0.0f,
-  -0.5f,  0.5f,  0.0f,
-   0.5f,  0.5f,  0.0f,
-   0.5f, -0.5f,  0.0f
+  0.0f, -0.5f, -0.5f,
+  0.0f,  0.5f, -0.5f,
+  0.0f, -0.5f,  0.5f,
+  0.0f,  0.5f,  0.5f,
 };
 
 const GLuint indices[] = {
-            0, 1, 2, 2, 3, 0
+            0, 1, 2, 3, 2, 1
 };
 
 glm::ivec2 g_windowSize(720, 720);
+
+double m_initial_mouse_pos_x = 0.0;
+double m_initial_mouse_pos_y = 0.0;
+
+void on_mouse_button_event(const Events::MouseButton button_code,
+    const double x_pos,
+    const double y_pos,
+    const bool pressed)
+{
+    m_initial_mouse_pos_x = x_pos;
+    m_initial_mouse_pos_y = y_pos;
+}
 
 int main(int argc, char** argv)
 {
@@ -35,11 +47,9 @@ int main(int argc, char** argv)
     float rotate = 0.f;
     float translate[3] = { 0.f, 0.f, 0.f };
 
-    float camera_position[3] = { 0.f, 0.f, 1.f };
-    float camera_rotation[3] = { 0.f, 0.f, 0.f };
     bool perspective_camera = true;
 
-    Rendering::Camera camera;
+    Rendering::Camera camera{ glm::vec3(-5.f, 0.f, 0.f) };
 
     Resources::ResourceManager::init(argv[0]);
 
@@ -78,11 +88,11 @@ int main(int argc, char** argv)
             {
                 if (event.repeated)
                 {
-                    //std::cout << "KeyPressed, Repeated" << std::endl;
+                    std::cout << "KeyPressed, Repeated" << std::endl;
                 }
                 else
                 {
-                    //std::cout << "KeyPressed" << std::endl;
+                    std::cout << "KeyPressed" << std::endl;
                 }
             }
             Events::Input::PressKey(event.key_code);
@@ -96,6 +106,21 @@ int main(int argc, char** argv)
                 
             }
             Events::Input::ReleaseKey(event.key_code);
+        });
+
+    m_event_dispatcher.add_event_listener<Events::EventMouseButtonPressed>(
+        [&](Events::EventMouseButtonPressed& event)
+        {
+            std::cout << "Mouse" << std::endl;
+            Events::Input::PressMouseButton(event.mouse_button);
+            on_mouse_button_event(event.mouse_button, event.x_pos, event.y_pos, true);
+        });
+
+    m_event_dispatcher.add_event_listener<Events::EventMouseButtonReleased>(
+        [&](Events::EventMouseButtonReleased& event)
+        {
+            Events::Input::ReleaseMouseButton(event.mouse_button);
+            on_mouse_button_event(event.mouse_button, event.x_pos, event.y_pos, false);
         });
 
     auto pDefaultShaderProgram = Resources::ResourceManager::loadShaderProgram("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
@@ -112,9 +137,9 @@ int main(int argc, char** argv)
     const GLfloat textureCoords[] = {
         // U  V
         subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+        subTexture.rightTopUV.x, subTexture.leftBottomUV.y,
         subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
         subTexture.rightTopUV.x, subTexture.rightTopUV.y,
-        subTexture.rightTopUV.x, subTexture.leftBottomUV.y
     };
 
     Rendering::VertexBuffer m_vertexCoordsBuffer;
@@ -144,30 +169,52 @@ int main(int argc, char** argv)
        Rendering::Renderer::setClearColor(1.0f, 1.0f, 0.0f, 1.0f);
        Rendering::Renderer::clear();
 
+       bool move_camera = false;
+       glm::vec3 movement_delta{ 0, 0, 0 };
+       glm::vec3 rotation_delta{ 0, 0, 0 };
+
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))
        {
-           camera_position[2] += -0.001f;
+           movement_delta.x += 0.0005f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_A))
        {
-           camera_position[0] += -0.001f;
+           movement_delta.y -= 0.0005f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))
        {
-           camera_position[2] +=  0.001f;
+           movement_delta.x -= 0.0005f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_D))
        {
-           camera_position[0] +=  0.001f;
+           movement_delta.y += 0.0005f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_Q))
        {
-           camera_position[1] +=  0.001f;
+           movement_delta.z += 0.0005f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_E))
        {
-           camera_position[1] += -0.001f;
+           movement_delta.z -= 0.0005f;
        }
+       if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT))
+       {
+           glm::vec2 current_cursor_position = m_pWindow->get_current_cursor_position();
+           if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_LEFT))
+           {
+               camera.move_right(static_cast<float>(current_cursor_position.x - m_initial_mouse_pos_x) / 100.f);
+               camera.move_up(static_cast<float>(m_initial_mouse_pos_y - current_cursor_position.y) / 100.f);
+           }
+           else
+           {
+               rotation_delta.z += static_cast<float>(m_initial_mouse_pos_x - current_cursor_position.x) / 5.f;
+               rotation_delta.y -= static_cast<float>(m_initial_mouse_pos_y - current_cursor_position.y) / 5.f;
+           }
+           m_initial_mouse_pos_x = current_cursor_position.x;
+           m_initial_mouse_pos_y = current_cursor_position.y;
+       }
+
+       camera.add_movement_and_rotation(movement_delta, rotation_delta);
 
        glm::mat4 scale_matrix(scale[0], 0, 0, 0,
            0, scale[1], 0, 0,
@@ -185,8 +232,6 @@ int main(int argc, char** argv)
        glm::mat4 model_matrix = translate_matrix * rotate_matrix * scale_matrix;
        pDefaultShaderProgram->setMatrix4("model_matrix", model_matrix);
 
-       camera.set_position_rotation(glm::vec3(camera_position[0], camera_position[1], camera_position[2]),
-           glm::vec3(camera_rotation[0], camera_rotation[1], camera_rotation[2]));
        camera.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
        pDefaultShaderProgram->setMatrix4("view_projection_matrix", camera.get_projection_matrix() * camera.get_view_matrix());
 

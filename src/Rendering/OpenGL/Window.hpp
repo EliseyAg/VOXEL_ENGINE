@@ -3,6 +3,7 @@
 #include "../../Events/Event.hpp"
 
 #include <string>
+#include <glm/vec2.hpp>
 #include <memory>
 
 class GLFWwindow;
@@ -30,6 +31,8 @@ namespace Rendering
 		{
 			m_data.eventCallbackFn = callback;
 		}
+
+		glm::vec2 get_current_cursor_position() const;
 
 	private:
 		struct WindowData

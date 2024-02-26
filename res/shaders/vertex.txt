@@ -10,5 +10,5 @@ out vec2 texCoords;
 void main()
 {
 	texCoords = texture_coords;
-  gl_Position = view_projection_matrix * model_matrix * vec4(vertex_position, 1.0);
+	gl_Position = view_projection_matrix * model_matrix * vec4(vertex_position, 1.0);
 }
