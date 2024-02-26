@@ -9,6 +9,7 @@
 #include "Events/Event.hpp"
 #include <memory>
 #include "glad/glad.h"
+#include <glm/vec2.hpp>
 
 
 GLfloat vertexCoords[] = {
@@ -29,11 +30,13 @@ GLfloat textureCoords[] = {
     1.0f, 0.0f
 };
 
+glm::ivec2 g_windowSize(720, 720);
+
 int main(int argc, char** argv)
 {
     Resources::ResourceManager::init(argv[0]);
 
-    std::unique_ptr<Rendering::Window> m_pWindow = std::make_unique<Rendering::Window>("Hello World", 640, 480);
+    std::unique_ptr<Rendering::Window> m_pWindow = std::make_unique<Rendering::Window>("VOXEL_ENGINE", g_windowSize.x, g_windowSize.y);
 
     Events::EventDispatcher m_event_dispatcher;
     bool m_bCloseWindow = false;
@@ -48,6 +51,8 @@ int main(int argc, char** argv)
     m_event_dispatcher.add_event_listener<Events::EventWindowResize>(
         [&](Events::EventWindowResize& event)
         {
+            g_windowSize.x = event.width;
+            g_windowSize.y = event.height;
             glViewport(0, 0, event.width, event.height);
         }
     );
