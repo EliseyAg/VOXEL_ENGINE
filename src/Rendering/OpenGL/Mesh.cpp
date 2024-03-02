@@ -9,19 +9,29 @@ namespace Rendering
                 0, 1, 2, 3, 2, 1
     };
 
-	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName) : m_vert(vert)
+	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName, std::string subTextureName) : m_vert(vert)
 	{
         m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
+
+        m_texture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
+        auto subTexture = m_texture->getSubTexture(std::move(subTextureName));
+        const float textureCoords[] = {
+            // U  V
+            subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+            subTexture.rightTopUV.x, subTexture.leftBottomUV.y,
+            subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
+            subTexture.rightTopUV.x, subTexture.rightTopUV.y,
+        };
 
         m_vertexCoordsBuffer->init(vertices, 3 * vert * sizeof(float));
         Rendering::VertexBufferLayout vertexCoordsLayout;
         vertexCoordsLayout.addElementLayoutFloat(3, false);
         m_vertexArray->addBuffer(*m_vertexCoordsBuffer, vertexCoordsLayout);
 
-        //m_textureCoordsBuffer.init(textureCoords, 2 * 4 * sizeof(GLfloat));
-        //Rendering::VertexBufferLayout textureCoordsLayout;
-        //textureCoordsLayout.addElementLayoutFloat(2, false);
-        //m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
+        m_textureCoordsBuffer->init(textureCoords, 2 * vert * sizeof(GLfloat));
+        Rendering::VertexBufferLayout textureCoordsLayout;
+        textureCoordsLayout.addElementLayoutFloat(2, false);
+        m_vertexArray->addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
 
         m_indexBuffer->init(indices, 6 * sizeof(int));
 	}
@@ -33,6 +43,7 @@ namespace Rendering
 
     void Mesh::render()
     {
+        m_texture->bind();
         Rendering::Renderer::draw(*m_vertexArray, *m_indexBuffer, *m_shaderProgram);
         m_vertexArray->unbind();
     }

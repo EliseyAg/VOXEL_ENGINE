@@ -1,6 +1,5 @@
 #include "Rendering/OpenGL/Window.hpp"
 #include "Rendering/OpenGL/ShaderProgram.hpp"
-#include "Rendering/OpenGL/Texture2D.hpp"
 #include "Rendering/OpenGL/Renderer.hpp"
 #include "Rendering/OpenGL/Mesh.hpp"
 #include "Rendering/OpenGL/Camera.hpp"
@@ -127,16 +126,7 @@ int main(int argc, char** argv)
     std::vector<std::string> subTexturesNames = { "GrassTop", "Grass", "Dirt", "Coblestone", "WoodTop", "Wood", "Pusto", "Pusto", "Lystya", "No" };
     auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 64, 64);
 
-    auto subTexture = pTexture->getSubTexture(std::move("GrassTop"));
-    const GLfloat textureCoords[] = {
-        // U  V
-        subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
-        subTexture.rightTopUV.x, subTexture.leftBottomUV.y,
-        subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
-        subTexture.rightTopUV.x, subTexture.rightTopUV.y,
-    };
-
-    Rendering::Mesh m_mesh(4, vertexCoords, "DefaultShader");
+    Rendering::Mesh m_mesh(4, vertexCoords, "DefaultShader", "No");
 
     while (!m_bCloseWindow)
     {
@@ -208,8 +198,6 @@ int main(int argc, char** argv)
 
        camera.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
        pDefaultShaderProgram->setMatrix4("view_projection_matrix", camera.get_projection_matrix() * camera.get_view_matrix());
-
-       pTexture->bind();
 
        m_mesh.render();
 
