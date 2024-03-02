@@ -24,6 +24,7 @@ set(PUBLIC_INCLUDES
 	src/Rendering/OpenGL/VertexBufferLayout.hpp
 	src/Rendering/OpenGL/Renderer.hpp
 	src/Rendering/OpenGL/Camera.hpp
+	src/Rendering/OpenGL/Mesh.hpp
 )
 
 set(PUBLIC_SOURCES
@@ -40,6 +41,7 @@ set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/VertexBufferLayout.cpp
 	src/Rendering/OpenGL/Renderer.cpp
 	src/Rendering/OpenGL/Camera.cpp
+	src/Rendering/OpenGL/Mesh.cpp
 )
 
 set(ALL_SOURCES

@@ -1,10 +1,8 @@
 #include "Rendering/OpenGL/Window.hpp"
 #include "Rendering/OpenGL/ShaderProgram.hpp"
 #include "Rendering/OpenGL/Texture2D.hpp"
-#include "Rendering/OpenGL/VertexBuffer.hpp"
-#include "Rendering/OpenGL/IndexBuffer.hpp"
-#include "Rendering/OpenGL/VertexArray.hpp"
 #include "Rendering/OpenGL/Renderer.hpp"
+#include "Rendering/OpenGL/Mesh.hpp"
 #include "Rendering/OpenGL/Camera.hpp"
 #include "Resources/ResourceManager.hpp"
 #include "Events/Event.hpp"
@@ -16,15 +14,11 @@
 #include <glm/vec2.hpp>
 
 
-GLfloat vertexCoords[] = {
+float vertexCoords[] = {
   0.0f, -0.5f, -0.5f,
   0.0f,  0.5f, -0.5f,
   0.0f, -0.5f,  0.5f,
   0.0f,  0.5f,  0.5f,
-};
-
-const GLuint indices[] = {
-            0, 1, 2, 3, 2, 1
 };
 
 glm::ivec2 g_windowSize(720, 720);
@@ -142,27 +136,7 @@ int main(int argc, char** argv)
         subTexture.rightTopUV.x, subTexture.rightTopUV.y,
     };
 
-    Rendering::VertexBuffer m_vertexCoordsBuffer;
-    Rendering::VertexBuffer m_textureCoordsBuffer;
-    Rendering::IndexBuffer m_indexBuffer;
-    Rendering::VertexArray m_vertexArray;
-
-    m_vertexCoordsBuffer.init(vertexCoords, 3 * 4 * sizeof(GLfloat));
-    Rendering::VertexBufferLayout vertexCoordsLayout;
-    vertexCoordsLayout.addElementLayoutFloat(3, false);
-    m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
-
-    m_textureCoordsBuffer.init(textureCoords, 2 * 4 * sizeof(GLfloat));
-    Rendering::VertexBufferLayout textureCoordsLayout;
-    textureCoordsLayout.addElementLayoutFloat(2, false);
-    m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
-
-    m_indexBuffer.init(indices, 6 * sizeof(GLuint));
-
-    m_vertexArray.unbind();
-    m_indexBuffer.unbind();
-
-    pDefaultShaderProgram->bind();
+    Rendering::Mesh m_mesh(4, vertexCoords, "DefaultShader");
 
     while (!m_bCloseWindow)
     {
@@ -237,9 +211,7 @@ int main(int argc, char** argv)
 
        pTexture->bind();
 
-       Rendering::Renderer::draw(m_vertexArray, m_indexBuffer, *pDefaultShaderProgram);
-
-       m_vertexArray.unbind();
+       m_mesh.render();
 
        m_pWindow->on_update();
 
