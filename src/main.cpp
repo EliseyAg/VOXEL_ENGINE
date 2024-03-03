@@ -96,7 +96,8 @@ int main(int argc, char** argv)
         {
             g_windowSize.x = event.width;
             g_windowSize.y = event.height;
-            Rendering::Renderer::setViewport(0, 0, event.width, event.height);
+            Rendering::Renderer::setViewport(event.width, event.height, 0, 0);
+            camera.set_viewport_size(event.width, event.height);
         }
     );
 
@@ -155,6 +156,8 @@ int main(int argc, char** argv)
         std::cerr << "Can't create shader program: " << "DefaultShader" << std::endl;
         return -1;
     }
+
+    camera.set_viewport_size(static_cast<float>(g_windowSize.x), static_cast<float>(g_windowSize.y));
 
     std::vector<std::string> subTexturesNames = { "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Pusto", "Green", "Unknown" };
     auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 64, 64);
