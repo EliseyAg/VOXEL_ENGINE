@@ -55,17 +55,7 @@ float vertexCoords[] = {
 
 glm::ivec2 g_windowSize(720, 720);
 
-double m_initial_mouse_pos_x = 0.0;
-double m_initial_mouse_pos_y = 0.0;
-
-void on_mouse_button_event(const Events::MouseButton button_code,
-    const double x_pos,
-    const double y_pos,
-    const bool pressed)
-{
-    m_initial_mouse_pos_x = x_pos;
-    m_initial_mouse_pos_y = y_pos;
-}
+bool isLockCursor = true;
 
 int main(int argc, char** argv)
 {
@@ -140,14 +130,12 @@ int main(int argc, char** argv)
         {
             std::cout << "Mouse" << std::endl;
             Events::Input::PressMouseButton(event.mouse_button);
-            on_mouse_button_event(event.mouse_button, event.x_pos, event.y_pos, true);
         });
 
     m_event_dispatcher.add_event_listener<Events::EventMouseButtonReleased>(
         [&](Events::EventMouseButtonReleased& event)
         {
             Events::Input::ReleaseMouseButton(event.mouse_button);
-            on_mouse_button_event(event.mouse_button, event.x_pos, event.y_pos, false);
         });
 
     auto pDefaultShaderProgram = Resources::ResourceManager::loadShaderProgram("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
@@ -163,7 +151,6 @@ int main(int argc, char** argv)
     auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 64, 64);
 
     std::vector<std::string> grassTextures = { "GrassTop", "GrassLeft", "Dirt" };
-
     Rendering::Mesh m_mesh(24, vertexCoords, "DefaultShader", grassTextures);
 
     Rendering::Renderer::setDepth(true);
@@ -201,21 +188,16 @@ int main(int argc, char** argv)
        {
            movement_delta.z += 0.0005f;
        }
-       if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT))
+       if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_ESCAPE))
        {
+           isLockCursor = !isLockCursor;
+       }
+       if (isLockCursor)
+       {
+           m_pWindow->LockCursor();
            glm::vec2 current_cursor_position = m_pWindow->get_current_cursor_position();
-           if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_LEFT))
-           {
-               camera.move_right(static_cast<float>(current_cursor_position.x - m_initial_mouse_pos_x) / 100.f);
-               camera.move_up(static_cast<float>(m_initial_mouse_pos_y - current_cursor_position.y) / 100.f);
-           }
-           else
-           {
-               rotation_delta.z += static_cast<float>(m_initial_mouse_pos_x - current_cursor_position.x) / 5.f;
-               rotation_delta.y -= static_cast<float>(m_initial_mouse_pos_y - current_cursor_position.y) / 5.f;
-           }
-           m_initial_mouse_pos_x = current_cursor_position.x;
-           m_initial_mouse_pos_y = current_cursor_position.y;
+           rotation_delta.z += glm::degrees(static_cast<float>(g_windowSize.x / 2 - current_cursor_position.x) * 0.005f);
+           rotation_delta.y -= glm::degrees(static_cast<float>(g_windowSize.y / 2 - current_cursor_position.y) * 0.005f);
        }
 
        camera.add_movement_and_rotation(movement_delta, rotation_delta);

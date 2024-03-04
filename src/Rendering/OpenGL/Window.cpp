@@ -155,4 +155,9 @@ namespace Rendering
         glfwGetCursorPos(m_pWindow, &x_pos, &y_pos);
         return { x_pos, y_pos };
     }
+
+    void Window::LockCursor()
+    {
+        glfwSetCursorPos(m_pWindow, m_data.width / 2, m_data.height / 2);
+    }
 }
