@@ -37,20 +37,23 @@ namespace Rendering
         glBindVertexArray(0);
     }
 
-    void VertexArray::addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout)
+    void VertexArray::addBuffer(const VertexBuffer& vertexBuffer)
     {
         bind();
         vertexBuffer.bind();
-        const auto& layoutElements = layout.getLayoutElements();
-        GLbyte* offset = nullptr;
-        for (unsigned int i = 0; i < layoutElements.size(); ++i)
+
+        for (const BufferElement& current_element : vertexBuffer.get_layout().get_elements())
         {
-            const auto& currentLayoutElement = layoutElements[i];
-            GLuint currentAttribIndex = m_elementsCount + i;
-            glEnableVertexAttribArray(currentAttribIndex);
-            glVertexAttribPointer(currentAttribIndex, currentLayoutElement.count, currentLayoutElement.type, currentLayoutElement.normalized, layout.getStride(), offset);
-            offset += currentLayoutElement.size;
+            glEnableVertexAttribArray(m_elementsCount);
+            glVertexAttribPointer(
+                m_elementsCount,
+                static_cast<GLint>(current_element.components_count),
+                current_element.component_type,
+                GL_FALSE,
+                static_cast<GLsizei>(vertexBuffer.get_layout().get_stride()),
+                reinterpret_cast<const void*>(current_element.offset)
+            );
+            ++m_elementsCount;
         }
-        m_elementsCount += static_cast<unsigned int>(layoutElements.size());
     }
 }

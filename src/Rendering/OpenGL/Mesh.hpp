@@ -21,7 +21,7 @@ namespace Rendering
 	private:
 		size_t m_vert;
 		size_t m_indices;
-		std::shared_ptr<VertexBuffer> m_buffer = std::make_shared<VertexBuffer>();
+		std::shared_ptr<VertexBuffer> m_buffer;
 		std::shared_ptr<IndexBuffer> m_indexBuffer = std::make_shared<IndexBuffer>();
 		std::shared_ptr<VertexArray> m_vertexArray = std::make_shared<VertexArray>();
 		std::shared_ptr<ShaderProgram> m_shaderProgram;

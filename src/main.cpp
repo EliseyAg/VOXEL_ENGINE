@@ -131,7 +131,7 @@ int main(int argc, char** argv)
 
     camera.set_viewport_size(static_cast<float>(g_windowSize.x), static_cast<float>(g_windowSize.y));
 
-    std::vector<std::string> subTexturesNames = { "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Pusto", "Green", "Unknown", "Birch", "Pusto", "Wood_Planks"};
+    std::vector<std::string> subTexturesNames = { "Air", "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Green", "Unknown", "Birch", "Pusto", "Wood_Planks"};
     auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 16, 16);
 
     std::vector<std::string> grassTextures = { "GrassTop", "GrassLeft", "Dirt" };

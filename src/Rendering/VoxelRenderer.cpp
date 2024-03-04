@@ -3,16 +3,18 @@
 #include "Voxels/Chunk.hpp"
 #include "OpenGL/Mesh.hpp"
 
-#define VERTEX_SIZE (3 + 0 + 0)
+#define VERTEX_SIZE (3 + 2 + 0)
 
 #define IS_IN(X,Y,Z) ((X) >= 0 && (X) < CHUNK_W && (Y) >= 0 && (Y) < CHUNK_H && (Z) >= 0 && (Z) < CHUNK_D)
 #define VOXEL(X,Y,Z) (chunk->voxels[((Y) * CHUNK_D + (Z)) * CHUNK_W + (X)])
 #define IS_BLOCKED(X,Y,Z) ((IS_IN(X, Y, Z)) && VOXEL(X, Y, Z).id)
 
 #define VERTEX(INDEX, X,Y,Z, U,V, L) buffer[INDEX+0] = (X);\
-								  buffer[INDEX+1] = (Y);\
-								  buffer[INDEX+2] = (Z);\
-								  INDEX += VERTEX_SIZE;
+									buffer[INDEX+1] = (Y);\
+									buffer[INDEX+2] = (Z);\
+									buffer[INDEX+3] = (U);\
+									buffer[INDEX+4] = (V);\
+									INDEX += VERTEX_SIZE;
 
 namespace Rendering
 {
@@ -39,7 +41,7 @@ namespace Rendering
 					}
 
 					float l;
-					float uvsize = 1.0f / 16.0f;
+					float uvsize = 1.0f / 8.0f;
 					float u = (id % 16) * uvsize;
 					float v = 1 - ((1 + id / 16) * uvsize);
 

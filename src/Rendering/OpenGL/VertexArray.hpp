@@ -15,7 +15,7 @@ namespace Rendering
         VertexArray& operator=(VertexArray&& vertexArray) noexcept;
         VertexArray(VertexArray&& vertexArray) noexcept;
 
-        void addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout);
+        void addBuffer(const VertexBuffer& vertexBuffert);
         void bind() const;
         void unbind() const;
 

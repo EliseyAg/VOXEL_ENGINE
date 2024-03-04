@@ -13,7 +13,7 @@ namespace Rendering
 				for (int x = 0; x < CHUNK_W; x++) {
 					int id = z <= (sin(x * 0.3f) * 0.5f + 0.5f) * 10;
 					if (z <= 2)
-						id = 2;
+						id = 3;
 					voxels[(y * CHUNK_D + z) * CHUNK_W + x].id = id;
 				}
 			}
