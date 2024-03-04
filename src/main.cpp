@@ -60,7 +60,6 @@ bool isLockCursor = true;
 int main(int argc, char** argv)
 {
     float scale[3] = { 1.f, 1.f, 1.f };
-    float rotate = 0.f;
     float translate[3] = { 0.f, 0.f, 0.f };
 
     bool perspective_camera = true;
@@ -74,12 +73,17 @@ int main(int argc, char** argv)
     Events::EventDispatcher m_event_dispatcher;
     bool m_bCloseWindow = false;
 
+    m_pWindow->set_event_callback(
+        [&](Events::BaseEvent& event)
+        {
+            m_event_dispatcher.dispatch(event);
+        });
+
     m_event_dispatcher.add_event_listener<Events::EventWindowClose>(
         [&](Events::EventWindowClose& event)
         {
             m_bCloseWindow = true;
-        }
-    );
+        });
 
     m_event_dispatcher.add_event_listener<Events::EventWindowResize>(
         [&](Events::EventWindowResize& event)
@@ -88,47 +92,23 @@ int main(int argc, char** argv)
             g_windowSize.y = event.height;
             Rendering::Renderer::setViewport(event.width, event.height, 0, 0);
             camera.set_viewport_size(event.width, event.height);
-        }
-    );
-
-    m_pWindow->set_event_callback(
-        [&](Events::BaseEvent& event)
-        {
-            m_event_dispatcher.dispatch(event);
-        }
-    );
+        });
 
     m_event_dispatcher.add_event_listener<Events::EventKeyPressed>(
         [&](Events::EventKeyPressed& event)
         {
-            if (event.key_code <= Events::KeyCode::KEY_Z)
-            {
-                if (event.repeated)
-                {
-                    std::cout << "KeyPressed, Repeated" << std::endl;
-                }
-                else
-                {
-                    std::cout << "KeyPressed" << std::endl;
-                }
-            }
             Events::Input::PressKey(event.key_code);
         });
 
     m_event_dispatcher.add_event_listener<Events::EventKeyReleased>(
         [&](Events::EventKeyReleased& event)
         {
-            if (event.key_code <= Events::KeyCode::KEY_Z)
-            {
-                
-            }
             Events::Input::ReleaseKey(event.key_code);
         });
 
     m_event_dispatcher.add_event_listener<Events::EventMouseButtonPressed>(
         [&](Events::EventMouseButtonPressed& event)
         {
-            std::cout << "Mouse" << std::endl;
             Events::Input::PressMouseButton(event.mouse_button);
         });
 
@@ -147,8 +127,8 @@ int main(int argc, char** argv)
 
     camera.set_viewport_size(static_cast<float>(g_windowSize.x), static_cast<float>(g_windowSize.y));
 
-    std::vector<std::string> subTexturesNames = { "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Pusto", "Green", "Unknown" };
-    auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 64, 64);
+    std::vector<std::string> subTexturesNames = { "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Pusto", "Green", "Unknown", "Birch", "Pusto", "Wood_Planks"};
+    auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 16, 16);
 
     std::vector<std::string> grassTextures = { "GrassTop", "GrassLeft", "Dirt" };
     Rendering::Mesh m_mesh(24, vertexCoords, "DefaultShader", grassTextures);
@@ -206,9 +186,8 @@ int main(int argc, char** argv)
            0, scale[1], 0, 0,
            0, 0, scale[2], 0,
            0, 0, 0, 1);
-       float rotate_in_radians = glm::radians(rotate);
-       glm::mat4 rotate_matrix(cos(rotate_in_radians), sin(rotate_in_radians), 0, 0,
-           -sin(rotate_in_radians), cos(rotate_in_radians), 0, 0,
+       glm::mat4 rotate_matrix(1, 0, 0, 0,
+           0, 1, 0, 0,
            0, 0, 1, 0,
            0, 0, 0, 1);
        glm::mat4 translate_matrix(1, 0, 0, 0,
