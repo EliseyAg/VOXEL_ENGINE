@@ -2,18 +2,8 @@
 #include "Renderer.hpp"
 #include "../src/Resources/ResourceManager.hpp"
 
-
 namespace Rendering
 {
-    int indices[] = {
-        0,   1,  2,  2,  3,  0, // front
-        4,   5,  6,  6,  7,  4, // back
-        8,   9, 10, 10, 11,  8, // right
-        12, 13, 14, 14, 15, 12, // left
-        16, 17, 18, 18, 19, 16, // top
-        20, 21, 22, 22, 23, 20  // bottom
-    };
-
 	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName, std::vector<std::string> subTexturesNames) : m_vert(vert)
 	{
         m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
@@ -55,17 +45,10 @@ namespace Rendering
             subTexture_bottom.leftBottomUV.x, subTexture_bottom.leftBottomUV.y,
         };
 
-        m_vertexCoordsBuffer->init(vertices, 3 * vert * sizeof(float));
+        m_buffer->init(vertices, 3 * vert * sizeof(float));
         Rendering::VertexBufferLayout vertexCoordsLayout;
         vertexCoordsLayout.addElementLayoutFloat(3, false);
-        m_vertexArray->addBuffer(*m_vertexCoordsBuffer, vertexCoordsLayout);
-
-        m_textureCoordsBuffer->init(textureCoords, 2 * vert * sizeof(int));
-        Rendering::VertexBufferLayout textureCoordsLayout;
-        textureCoordsLayout.addElementLayoutFloat(2, false);
-        m_vertexArray->addBuffer(*m_textureCoordsBuffer, textureCoordsLayout);
-
-        m_indexBuffer->init(indices, vert * sizeof(int));
+        m_vertexArray->addBuffer(*m_buffer, vertexCoordsLayout);
 	}
 
     Mesh::~Mesh()
@@ -76,7 +59,7 @@ namespace Rendering
     void Mesh::render()
     {
         m_texture->bind();
-        Rendering::Renderer::draw(*m_vertexArray, *m_indexBuffer, *m_shaderProgram);
+        Rendering::Renderer::draw(*m_vertexArray, *m_shaderProgram, m_vert);
         m_vertexArray->unbind();
     }
 }

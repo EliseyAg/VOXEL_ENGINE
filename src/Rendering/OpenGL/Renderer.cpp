@@ -14,6 +14,14 @@ namespace Rendering
 		glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
+	void Renderer::draw(const VertexArray& vertexArray, const ShaderProgram& shader, int vertices)
+	{
+		shader.bind();
+		vertexArray.bind();
+
+		glDrawArrays(GL_TRIANGLES, 0, vertices);
+	}
+
 	void Renderer::setClearColor(float r, float g, float b, float a)
 	{
 		glClearColor(r, g, b, a);

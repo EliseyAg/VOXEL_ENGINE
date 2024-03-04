@@ -10,6 +10,7 @@ namespace Rendering
 	{
 	public:
 		static void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader);
+		static void draw(const VertexArray& vertexArray, const ShaderProgram& shader, int vertices);
 		static void setClearColor(float r, float g, float b, float a);
 		static void clear();
 		static void setDepth(const bool enable);

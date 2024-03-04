@@ -3,6 +3,8 @@
 #include "Rendering/OpenGL/Renderer.hpp"
 #include "Rendering/OpenGL/Mesh.hpp"
 #include "Rendering/OpenGL/Camera.hpp"
+#include "Rendering/Voxels/Chunk.hpp"
+#include "Rendering/VoxelRenderer.hpp"
 #include "Resources/ResourceManager.hpp"
 #include "Events/Event.hpp"
 #include "Events/Input.hpp"
@@ -125,13 +127,18 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    Rendering::VoxelRenderer renderer(1024 * 1024 * 8);
+
     camera.set_viewport_size(static_cast<float>(g_windowSize.x), static_cast<float>(g_windowSize.y));
 
     std::vector<std::string> subTexturesNames = { "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Pusto", "Green", "Unknown", "Birch", "Pusto", "Wood_Planks"};
     auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 16, 16);
 
     std::vector<std::string> grassTextures = { "GrassTop", "GrassLeft", "Dirt" };
-    Rendering::Mesh m_mesh(24, vertexCoords, "DefaultShader", grassTextures);
+
+    Rendering::Chunk* chunk = new Rendering::Chunk();
+
+    Rendering::Mesh* m_mesh = renderer.render(chunk);
 
     Rendering::Renderer::setDepth(true);
 
@@ -200,7 +207,7 @@ int main(int argc, char** argv)
        camera.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
        pDefaultShaderProgram->setMatrix4("view_projection_matrix", camera.get_projection_matrix() * camera.get_view_matrix());
 
-       m_mesh.render();
+       m_mesh->render();
 
        m_pWindow->on_update();
 
