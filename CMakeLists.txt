@@ -21,7 +21,6 @@ set(PUBLIC_INCLUDES
 	src/Rendering/OpenGL/IndexBuffer.hpp
 	src/Rendering/OpenGL/VertexBuffer.hpp
 	src/Rendering/OpenGL/VertexArray.hpp
-	src/Rendering/OpenGL/VertexBufferLayout.hpp
 	src/Rendering/OpenGL/Renderer.hpp
 	src/Rendering/OpenGL/Camera.hpp
 	src/Rendering/OpenGL/Mesh.hpp
@@ -41,7 +40,6 @@ set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/IndexBuffer.cpp
 	src/Rendering/OpenGL/VertexBuffer.cpp
 	src/Rendering/OpenGL/VertexArray.cpp
-	src/Rendering/OpenGL/VertexBufferLayout.cpp
 	src/Rendering/OpenGL/Renderer.cpp
 	src/Rendering/OpenGL/Camera.cpp
 	src/Rendering/OpenGL/Mesh.cpp

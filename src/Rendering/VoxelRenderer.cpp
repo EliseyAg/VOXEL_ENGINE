@@ -68,22 +68,22 @@ namespace Rendering
 
 					if (!IS_BLOCKED(x + 1, y, z)) {
 						l = 0.95f;
-						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u, v + uvsize, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u, v, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
 
-						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u, v, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u, v, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u, v + uvsize, l);
 					}
 					if (!IS_BLOCKED(x - 1, y, z)) {
 						l = 0.85f;
 						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
 						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
 
 						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u + uvsize, v, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u, v + uvsize, l);
 						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
 					}
 

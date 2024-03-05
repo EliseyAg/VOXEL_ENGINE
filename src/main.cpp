@@ -14,47 +14,6 @@
 #include <iostream>
 #include <glm/vec2.hpp>
 
-
-float vertexCoords[] = {
-    //    position            index
-
-    // FRONT
-    -1.0f, -1.f, -1.f,        // 0
-    -1.0f,  1.f, -1.f,        // 1
-    -1.0f,  1.f,  1.f,        // 2
-    -1.0f, -1.f,  1.f,        // 3
-
-    // BACK           
-     1.0f, -1.f, -1.f,        // 4
-     1.0f,  1.f, -1.f,        // 5
-     1.0f,  1.f,  1.f,        // 6
-     1.0f, -1.f,  1.f,        // 7
-
-    // RIGHT
-    -1.0f,  1.f, -1.f,        // 8
-     1.0f,  1.f, -1.f,        // 9
-     1.0f,  1.f,  1.f,        // 10
-    -1.0f,  1.f,  1.f,        // 11
-
-    // LEFT
-    -1.0f, -1.f, -1.f,        // 12
-     1.0f, -1.f, -1.f,        // 13
-     1.0f, -1.f,  1.f,        // 14
-    -1.0f, -1.f,  1.f,        // 15
-
-    // TOP
-    -1.0f, -1.f,  1.f,        // 16
-    -1.0f,  1.f,  1.f,        // 17
-     1.0f,  1.f,  1.f,        // 18
-     1.0f, -1.f,  1.f,        // 19
-
-    // BOTTOM
-    -1.0f, -1.f, -1.f,        // 20
-    -1.0f,  1.f, -1.f,        // 21
-     1.0f,  1.f, -1.f,        // 22
-     1.0f, -1.f, -1.f,        // 23
-};
-
 glm::ivec2 g_windowSize(720, 720);
 
 bool isLockCursor = true;
@@ -66,7 +25,7 @@ int main(int argc, char** argv)
 
     bool perspective_camera = true;
 
-    Rendering::Camera camera{ glm::vec3(-5.f, 0.f, 0.f) };
+    Rendering::Camera camera{ glm::vec3(16.f, 16.f, 16.f) };
 
     Resources::ResourceManager::init(argv[0]);
 
