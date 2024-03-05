@@ -145,6 +145,18 @@ int main(int argc, char** argv)
            glm::vec2 current_cursor_position = m_pWindow->get_current_cursor_position();
            rotation_delta.z += glm::degrees(static_cast<float>(g_windowSize.x / 2 - current_cursor_position.x) * 0.01f);
            rotation_delta.y -= glm::degrees(static_cast<float>(g_windowSize.y / 2 - current_cursor_position.y) * 0.01f);
+           glm::vec3 end;
+           glm::vec3 norm;
+           glm::vec3 iend;
+           Rendering::Voxel* vox = chunks->rayCast(camera.get_position(), camera.get_direction(), 10.0f, end, norm, iend);
+           if (vox != nullptr) {
+               if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
+                   chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
+               }
+               if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
+                   chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
+               }
+           }
        }
        camera.add_movement_and_rotation(movement_delta, rotation_delta);
 
