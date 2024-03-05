@@ -4,6 +4,7 @@
 #include "Rendering/OpenGL/Mesh.hpp"
 #include "Rendering/OpenGL/Camera.hpp"
 #include "Rendering/Voxels/Chunk.hpp"
+#include "Rendering/Voxels/Chunks.hpp"
 #include "Rendering/VoxelRenderer.hpp"
 #include "Resources/ResourceManager.hpp"
 #include "Events/Event.hpp"
@@ -86,6 +87,10 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    Rendering::Chunks* chunks = new Rendering::Chunks(4, 4, 4);
+    Rendering::Mesh** meshes = new Rendering::Mesh * [chunks->volume];
+    for (size_t i = 0; i < chunks->volume; i++)
+        meshes[i] = nullptr;
     Rendering::VoxelRenderer renderer(1024 * 1024 * 8);
 
     camera.set_viewport_size(static_cast<float>(g_windowSize.x), static_cast<float>(g_windowSize.y));
@@ -94,10 +99,6 @@ int main(int argc, char** argv)
     auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 16, 16);
 
     std::vector<std::string> grassTextures = { "GrassTop", "GrassLeft", "Dirt" };
-
-    Rendering::Chunk* chunk = new Rendering::Chunk();
-
-    Rendering::Mesh* m_mesh = renderer.render(chunk);
 
     Rendering::Renderer::setDepth(true);
 
@@ -112,27 +113,27 @@ int main(int argc, char** argv)
 
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))
        {
-           movement_delta.x += 0.0005f;
+           movement_delta.x += 0.001f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_A))
        {
-           movement_delta.y -= 0.0005f;
+           movement_delta.y -= 0.001f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))
        {
-           movement_delta.x -= 0.0005f;
+           movement_delta.x -= 0.001f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_D))
        {
-           movement_delta.y += 0.0005f;
+           movement_delta.y += 0.001f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_Q))
        {
-           movement_delta.z -= 0.0005f;
+           movement_delta.z -= 0.001f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_E))
        {
-           movement_delta.z += 0.0005f;
+           movement_delta.z += 0.001f;
        }
        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_ESCAPE))
        {
@@ -142,31 +143,52 @@ int main(int argc, char** argv)
        {
            m_pWindow->LockCursor();
            glm::vec2 current_cursor_position = m_pWindow->get_current_cursor_position();
-           rotation_delta.z += glm::degrees(static_cast<float>(g_windowSize.x / 2 - current_cursor_position.x) * 0.005f);
-           rotation_delta.y -= glm::degrees(static_cast<float>(g_windowSize.y / 2 - current_cursor_position.y) * 0.005f);
+           rotation_delta.z += glm::degrees(static_cast<float>(g_windowSize.x / 2 - current_cursor_position.x) * 0.01f);
+           rotation_delta.y -= glm::degrees(static_cast<float>(g_windowSize.y / 2 - current_cursor_position.y) * 0.01f);
        }
-
        camera.add_movement_and_rotation(movement_delta, rotation_delta);
 
-       glm::mat4 scale_matrix(scale[0], 0, 0, 0,
-           0, scale[1], 0, 0,
-           0, 0, scale[2], 0,
-           0, 0, 0, 1);
-       glm::mat4 rotate_matrix(1, 0, 0, 0,
-           0, 1, 0, 0,
-           0, 0, 1, 0,
-           0, 0, 0, 1);
-       glm::mat4 translate_matrix(1, 0, 0, 0,
-           0, 1, 0, 0,
-           0, 0, 1, 0,
-           translate[0], translate[1], translate[2], 1);
-       glm::mat4 model_matrix = translate_matrix * rotate_matrix * scale_matrix;
-       pDefaultShaderProgram->setMatrix4("model_matrix", model_matrix);
+       Rendering::Chunk* closes[27];
+       for (size_t i = 0; i < chunks->volume; i++) {
+           Rendering::Chunk* chunk = chunks->chunks[i];
+           if (!chunk->modified)
+               continue;
+           chunk->modified = false;
+           if (meshes[i] != nullptr)
+               delete meshes[i];
+
+           for (int i = 0; i < 27; i++)
+               closes[i] = nullptr;
+           for (size_t j = 0; j < chunks->volume; j++) {
+               Rendering::Chunk* other = chunks->chunks[j];
+
+               int ox = other->m_x - chunk->m_x;
+               int oy = other->m_y - chunk->m_y;
+               int oz = other->m_z - chunk->m_z;
+
+               if (abs(ox) > 1 || abs(oy) > 1 || abs(oz) > 1)
+                   continue;
+
+               ox += 1;
+               oy += 1;
+               oz += 1;
+               closes[(oy * 3 + oz) * 3 + ox] = other;
+           }
+           Rendering::Mesh* mesh = renderer.render(chunk, (const Rendering::Chunk**)closes);
+           meshes[i] = mesh;
+       }
 
        camera.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
        pDefaultShaderProgram->setMatrix4("view_projection_matrix", camera.get_projection_matrix() * camera.get_view_matrix());
 
-       m_mesh->render();
+       glm::mat4 model_matrix(1.0f);
+       for (size_t i = 0; i < chunks->volume; i++) {
+           Rendering::Chunk* chunk = chunks->chunks[i];
+           Rendering::Mesh* mesh = meshes[i];
+           model_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(chunk->m_x * CHUNK_W + 0.5f, chunk->m_y * CHUNK_H + 0.5f, chunk->m_z * CHUNK_D + 0.5f));
+           pDefaultShaderProgram->setMatrix4("model_matrix", model_matrix);
+           mesh->render();
+       }
 
        m_pWindow->on_update();
 

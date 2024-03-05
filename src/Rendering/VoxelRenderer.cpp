@@ -5,9 +5,14 @@
 
 #define VERTEX_SIZE (3 + 2 + 0)
 
-#define IS_IN(X,Y,Z) ((X) >= 0 && (X) < CHUNK_W && (Y) >= 0 && (Y) < CHUNK_H && (Z) >= 0 && (Z) < CHUNK_D)
-#define VOXEL(X,Y,Z) (chunk->voxels[((Y) * CHUNK_D + (Z)) * CHUNK_W + (X)])
-#define IS_BLOCKED(X,Y,Z) ((IS_IN(X, Y, Z)) && VOXEL(X, Y, Z).id)
+#define CDIV(X,A) (((X) < 0) ? ((X) / (A) - 1) : ((X) / (A)))
+#define LOCAL_NEG(X, SIZE) (((X) < 0) ? ((SIZE)+(X)) : (X))
+#define LOCAL(X, SIZE) ((X) >= (SIZE) ? ((X) - (SIZE)) : LOCAL_NEG(X, SIZE))
+#define IS_CHUNK(X,Y,Z) (GET_CHUNK(X,Y,Z) != nullptr)
+#define GET_CHUNK(X,Y,Z) (chunks[((CDIV(Y, CHUNK_H)+1) * 3 + CDIV(Z, CHUNK_D) + 1) * 3 + CDIV(X, CHUNK_W) + 1])
+
+#define VOXEL(X,Y,Z) (GET_CHUNK(X,Y,Z)->voxels[(LOCAL(Y, CHUNK_H) * CHUNK_D + LOCAL(Z, CHUNK_D)) * CHUNK_W + LOCAL(X, CHUNK_W)])
+#define IS_BLOCKED(X,Y,Z) ((!IS_CHUNK(X, Y, Z)) || VOXEL(X, Y, Z).id)
 
 #define VERTEX(INDEX, X,Y,Z, U,V, L) buffer[INDEX+0] = (X);\
 									buffer[INDEX+1] = (Y);\
@@ -28,7 +33,7 @@ namespace Rendering
 		delete[] buffer;
 	}
 
-	Mesh* VoxelRenderer::render(Chunk* chunk) {
+	Mesh* VoxelRenderer::render(Chunk* chunk, const Chunk** chunks) {
 		size_t index = 0;
 		for (int y = 0; y < CHUNK_H; y++) {
 			for (int z = 0; z < CHUNK_D; z++) {

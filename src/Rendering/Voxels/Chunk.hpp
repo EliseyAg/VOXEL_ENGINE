@@ -13,7 +13,11 @@ namespace Rendering
 	{
 	public:
 		Voxel* voxels;
-		Chunk();
+
+		Chunk(int x, int y, int z);
 		~Chunk();
+
+		bool modified = true;
+		int m_x, m_y, m_z;
 	};
 }

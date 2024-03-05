@@ -18,9 +18,9 @@ namespace Rendering
 
     void Camera::update_view_matrix()
     {
-        const float roll_in_radians = glm::radians(m_rotation.x);
+        const float roll_in_radians  = glm::radians(m_rotation.x);
         const float pitch_in_radians = glm::radians(m_rotation.y);
-        const float yaw_in_radians = glm::radians(m_rotation.z);
+        const float yaw_in_radians   = glm::radians(m_rotation.z);
 
         const glm::mat3 rotate_matrix_x(1, 0, 0,
             0, cos(roll_in_radians), sin(roll_in_radians),
@@ -133,8 +133,8 @@ namespace Rendering
         const glm::vec3& rotation_delta)
     {
         m_position += m_direction * movement_delta.x;
-        m_position += m_right * movement_delta.y;
-        m_position += m_up * movement_delta.z;
+        m_position += m_right     * movement_delta.y;
+        m_position += m_up        * movement_delta.z;
         m_rotation += rotation_delta;
         m_update_view_matrix = true;
     }
