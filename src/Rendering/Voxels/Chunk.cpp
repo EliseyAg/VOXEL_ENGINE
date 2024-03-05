@@ -16,7 +16,7 @@ namespace Rendering
 					int real_z = z + this->m_z * CHUNK_D;
 					int id = real_z <= (sin(real_x * 0.3f) * 0.5f + 0.5f) * 10;
 					if (real_z <= 2)
-						id = 2;
+						id = 3;
 					voxels[(y * CHUNK_D + z) * CHUNK_W + x].id = id;
 				}
 			}

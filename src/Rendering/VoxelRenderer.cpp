@@ -47,9 +47,37 @@ namespace Rendering
 
 					float l;
 					float uvsize = 1.0f / 8.0f;
-					float u = (id % 16) * uvsize;
-					float v = 1 - ((1 + id / 16) * uvsize);
+					float u, v;
+					uint8_t top_id, bok_id, bot_id;
 
+					switch (id)
+					{
+					case 0:
+						break;
+					case 1:
+						top_id = 1;
+						bok_id = 2;
+						bot_id = 3;
+						break;
+					case 2:
+						top_id = 3;
+						bok_id = 3;
+						bot_id = 3;
+						break;
+					case 3:
+						top_id = 4;
+						bok_id = 4;
+						bot_id = 4;
+						break;
+					case 4:
+						top_id = 5;
+						bok_id = 6;
+						bot_id = 5;
+						break;
+					}
+
+					u = (bok_id % 16) * uvsize;
+					v = 1 - ((1 + bok_id / 16) * uvsize);
 					if (!IS_BLOCKED(x, y + 1, z)) {
 						l = 1.0f;
 						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
@@ -60,6 +88,7 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u, v + uvsize, l);
 						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u, v, l);
 					}
+
 					if (!IS_BLOCKED(x, y - 1, z)) {
 						l = 0.75f;
 						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
@@ -81,6 +110,7 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
 						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u, v + uvsize, l);
 					}
+
 					if (!IS_BLOCKED(x - 1, y, z)) {
 						l = 0.85f;
 						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
@@ -92,6 +122,8 @@ namespace Rendering
 						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
 					}
 
+					u = (top_id % 16) * uvsize;
+					v = 1 - ((1 + top_id / 16) * uvsize);
 					if (!IS_BLOCKED(x, y, z + 1)) {
 						l = 0.9f;
 						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u, v, l);
@@ -102,6 +134,9 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u + uvsize, v, l);
 						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
 					}
+
+					u = (bot_id % 16) * uvsize;
+					v = 1 - ((1 + bot_id / 16) * uvsize);
 					if (!IS_BLOCKED(x, y, z - 1)) {
 						l = 0.8f;
 						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u + uvsize, v, l);

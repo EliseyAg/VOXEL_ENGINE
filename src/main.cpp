@@ -153,7 +153,7 @@ int main(int argc, char** argv)
                if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
                    chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
                }
-               if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
+               else if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
                }
            }
