@@ -50,27 +50,27 @@ namespace Game
 
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))
         {
-            movement_delta.x += 0.001f;
+            movement_delta.x += 0.005f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_A))
         {
-            movement_delta.y -= 0.001f;
+            movement_delta.y -= 0.005f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))
         {
-            movement_delta.x -= 0.001f;
+            movement_delta.x -= 0.005f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_D))
         {
-            movement_delta.y += 0.001f;
+            movement_delta.y += 0.005f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_Q))
         {
-            movement_delta.z -= 0.001f;
+            movement_delta.z -= 0.005f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_E))
         {
-            movement_delta.z += 0.001f;
+            movement_delta.z += 0.005f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_ESCAPE))
         {
