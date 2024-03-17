@@ -10,6 +10,9 @@
 #define STBI_ONLY_PNG
 #include "stb_image.hpp"
 
+#include <../external/rapidjson/include/rapidjson/document.h>
+#include <../external/rapidjson/include/rapidjson/error/en.h>
+
 namespace Resources
 {
     ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
@@ -17,10 +20,16 @@ namespace Resources
 
     std::string ResourceManager::m_path;
 
-    void ResourceManager::init(const std::string& executablePath)
+    void ResourceManager::setExecutablePath(const std::string& executablePath)
     {
         size_t found = executablePath.find_last_of("/\\");
         m_path = executablePath.substr(0, found);
+    }
+
+    void ResourceManager::unloadAllResources()
+    {
+        m_shaderPrograms.clear();
+        m_textures.clear();
     }
 
     std::string ResourceManager::getFileString(const std::string& relativeFilePath)
@@ -138,5 +147,59 @@ namespace Resources
             }
         }
         return pTexture;
+    }
+
+    bool ResourceManager::loadJSONResources(const std::string& JSONPath)
+    {
+        const std::string JSONString = getFileString(JSONPath);
+        if (JSONString.empty())
+        {
+            std::cerr << "No JSON resources file!" << std::endl;
+            return false;
+        }
+
+        rapidjson::Document document;
+        rapidjson::ParseResult parseResult = document.Parse(JSONString.c_str());
+        if (!parseResult)
+        {
+            std::cerr << "JSON parse error: " << rapidjson::GetParseError_En(parseResult.Code()) << "(" << parseResult.Offset() << ")" << std::endl;
+            std::cerr << "In JSON file: " << JSONPath << std::endl;
+            return false;
+        }
+
+        auto shadersIt = document.FindMember("shaders");
+        if (shadersIt != document.MemberEnd())
+        {
+            for (const auto& currentShader : shadersIt->value.GetArray())
+            {
+                const std::string name = currentShader["name"].GetString();
+                const std::string filePath_v = currentShader["filePath_v"].GetString();
+                const std::string filePath_f = currentShader["filePath_f"].GetString();
+                loadShaderProgram(name, filePath_v, filePath_f);
+            }
+        }
+
+        auto textureAtlasesIt = document.FindMember("textureAtlases");
+        if (textureAtlasesIt != document.MemberEnd())
+        {
+            for (const auto& currentTextrueAtlas : textureAtlasesIt->value.GetArray())
+            {
+                const std::string name = currentTextrueAtlas["name"].GetString();
+                const std::string filePath = currentTextrueAtlas["filePath"].GetString();
+                const unsigned int subTextureWidth = currentTextrueAtlas["subTextureWidth"].GetUint();
+                const unsigned int subTextureHeight = currentTextrueAtlas["subTextureHeight"].GetUint();
+
+                const auto subTexturesArray = currentTextrueAtlas["subTextures"].GetArray();
+                std::vector<std::string> subTextures;
+                subTextures.reserve(subTexturesArray.Size());
+                for (const auto& currentSubTexture : subTexturesArray)
+                {
+                    subTextures.emplace_back(currentSubTexture.GetString());
+                }
+                loadTextureAtlas(name, filePath, std::move(subTextures), subTextureWidth, subTextureHeight);
+            }
+        }
+
+        return true;
     }
 }

@@ -23,7 +23,8 @@ namespace Resources
 		ResourceManager& operator=(ResourceManager&&) = delete;
 		ResourceManager(ResourceManager&&) = delete;
 
-		static void init(const std::string& excutablePath);
+		static void setExecutablePath(const std::string& excutablePath);
+		static void unloadAllResources();
 
 		static std::shared_ptr<Rendering::ShaderProgram> loadShaderProgram(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
 		static std::shared_ptr<Rendering::ShaderProgram> getShaderProgram(const std::string& shaderName);
@@ -35,6 +36,8 @@ namespace Resources
 																	  const std::vector<std::string> subTextures,
 																	  const unsigned int subTextureWidth,
 																	  const unsigned int subTextureHeight);
+
+		static bool loadJSONResources(const std::string& JSONPath);
 
 	private:
 		static std::string getFileString(const std::string& relativeFilePath);

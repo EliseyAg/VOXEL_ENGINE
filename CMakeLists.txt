@@ -83,4 +83,4 @@ add_subdirectory(external/glad ${CMAKE_CURRENT_BINARY_DIR}/glad)
 target_link_libraries(${PROJECT_NAME} PUBLIC glad)
 
 include_directories(external/glm)
-include_directories(external/rapidjson/include)
+include_directories(external/rapidjson)

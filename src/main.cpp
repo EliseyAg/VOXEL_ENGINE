@@ -15,7 +15,7 @@ glm::ivec2 g_windowSize(720, 720);
 
 int main(int argc, char** argv)
 {
-    Resources::ResourceManager::init(argv[0]);
+    Resources::ResourceManager::setExecutablePath(argv[0]);
 
     Game::Game m_game(g_windowSize);
 
@@ -76,12 +76,8 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    std::vector<std::string> subTexturesNames = { "Air", "GrassTop", "GrassLeft", "Dirt", "Coblestone", "WoodTop", "WoodLeft", "Pusto", "Green", "Unknown", "Birch", "Pusto", "Wood_Planks"};
-    auto pTexture = Resources::ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/Blocks.png", std::move(subTexturesNames), 16, 16);
-
-    std::vector<std::string> grassTextures = { "GrassTop", "GrassLeft", "Dirt" };
-
-    bool res = m_game.init();
+    Resources::ResourceManager::loadJSONResources("res/resources.json");
+    bool resultCode = m_game.init();
 
     Rendering::Renderer::setDepth(true);
 
@@ -109,10 +105,9 @@ int main(int argc, char** argv)
        }
 
        m_pWindow->on_update();
-
     }
 
+    Resources::ResourceManager::unloadAllResources();
     m_pWindow = nullptr;
-
-    return res;
+    return resultCode;
 }

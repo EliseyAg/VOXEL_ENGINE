@@ -1,0 +1,33 @@
+{
+	"shaders" : [
+		{
+			"name" 		 : "DefaultShader",
+			"filePath_v" : "res/shaders/vertex.txt",
+			"filePath_f" : "res/shaders/fragment.txt"
+		}
+	],
+	
+	"textureAtlases" : [
+		{
+			"name" 				: "DefaultTextureAtlas",
+			"filePath"  		: "res/textures/Blocks.png",
+			"subTextureWidth"   : 16,
+			"subTextureHeight"  : 16,
+			"subTextures" : [
+				"Air",
+				"GrassTop",
+				"GrassLeft",
+				"Dirt",
+				"Coblestone",
+				"WoodTop",
+				"WoodLeft",
+				"Pusto",
+				"Green",
+				"Unknown",
+				"Birch",
+				"Pusto",
+				"Wood_Planks"
+			]
+		}
+	]
+}
