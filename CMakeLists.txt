@@ -15,6 +15,8 @@ set(PUBLIC_INCLUDES
 	src/Resources/ResourceManager.hpp
 	src/Resources/stb_image.hpp
 
+	src/Game/Game.hpp
+
 	src/Rendering/OpenGL/Window.hpp
 	src/Rendering/OpenGL/Texture2D.hpp
 	src/Rendering/OpenGL/ShaderProgram.hpp
@@ -34,6 +36,8 @@ set(PUBLIC_SOURCES
 	src/Events/Input.cpp
 
 	src/Resources/ResourceManager.cpp
+
+	src/Game/Game.cpp
 
 	src/Rendering/OpenGL/Window.cpp
 	src/Rendering/OpenGL/Texture2D.cpp
