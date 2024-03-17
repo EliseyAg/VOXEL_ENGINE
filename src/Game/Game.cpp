@@ -12,7 +12,6 @@
 
 namespace Game
 {
-    bool isLockCursor = true;
     float scale[3] = { 1.f, 1.f, 1.f };
     float translate[3] = { 0.f, 0.f, 0.f };
 
@@ -75,10 +74,19 @@ namespace Game
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_ESCAPE))
         {
-            isLockCursor = !isLockCursor;
+            switch (m_eCurrentGameState)
+            {
+            case EGameState::Active:
+                m_eCurrentGameState = EGameState::Pause;
+                break;
+            case EGameState::Pause:
+                m_eCurrentGameState = EGameState::Active;
+                break;
+            }
         }
-        if (isLockCursor)
+        switch (m_eCurrentGameState)
         {
+        case EGameState::Active:
             rotation_delta.z += glm::degrees(static_cast<float>(m_windowSize.x / 2 - current_cursor_position.x) * 0.01f);
             rotation_delta.y -= glm::degrees(static_cast<float>(m_windowSize.y / 2 - current_cursor_position.y) * 0.01f);
             glm::vec3 end;
@@ -93,6 +101,9 @@ namespace Game
                     chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
                 }
             }
+            break;
+        //case EGameState::Pause:
+        //    break;
         }
         camera.add_movement_and_rotation(movement_delta, rotation_delta);
 

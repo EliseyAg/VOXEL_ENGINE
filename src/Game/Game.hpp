@@ -6,6 +6,11 @@ namespace Game
     class Game
     {
     public:
+        enum class EGameState {
+            Active,
+            Pause
+        };
+
         Game(const glm::ivec2& windowSize);
         ~Game();
 
@@ -14,12 +19,8 @@ namespace Game
         bool init();
 
         void update_winsize(glm::ivec2& windowSize);
+        EGameState get_GameState() const { return m_eCurrentGameState; };
     private:
-        enum class EGameState {
-            Active,
-            Pause
-        };
-
         glm::ivec2 m_windowSize;
         EGameState m_eCurrentGameState;
     };

@@ -99,7 +99,14 @@ int main(int argc, char** argv)
 
        m_game.render(m_pWindow->get_current_cursor_position());
 
-       m_pWindow->LockCursor();
+       switch (m_game.get_GameState())
+       {
+       case Game::Game::EGameState::Active:
+           m_pWindow->LockCursor();
+           break;
+       case Game::Game::EGameState::Pause:
+           break;
+       }
 
        m_pWindow->on_update();
 
