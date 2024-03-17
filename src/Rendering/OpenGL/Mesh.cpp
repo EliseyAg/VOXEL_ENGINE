@@ -4,14 +4,10 @@
 
 namespace Rendering
 {
-	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName, std::vector<std::string> subTexturesNames) : m_vert(vert)
+	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName) : m_vert(vert)
 	{
         m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
-
         m_texture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
-        auto subTexture_top = m_texture->getSubTexture(std::move(subTexturesNames[0]));
-        auto subTexture_bock = m_texture->getSubTexture(std::move(subTexturesNames[1]));
-        auto subTexture_bottom = m_texture->getSubTexture(std::move(subTexturesNames[2]));
 
         BufferLayout buffer_layout_vec3_vec2
         {

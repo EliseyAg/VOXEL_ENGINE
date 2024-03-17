@@ -14,7 +14,7 @@ namespace Rendering
 	class Mesh
 	{
 	public:
-		Mesh(size_t vert, float vertices[], std::string ShaderName, std::vector<std::string> subTexturesName);
+		Mesh(size_t vert, float vertices[], std::string ShaderName);
 		~Mesh();
 
 		void render();

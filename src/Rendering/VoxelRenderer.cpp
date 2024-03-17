@@ -150,6 +150,6 @@ namespace Rendering
 				}
 			}
 		}
-		return new Mesh(index / VERTEX_SIZE, buffer, "DefaultShader", std::vector<std::string>{ "GrassTop", "GrassLeft", "Dirt" });
+		return new Mesh(index / VERTEX_SIZE, buffer, "DefaultShader");
 	}
 }

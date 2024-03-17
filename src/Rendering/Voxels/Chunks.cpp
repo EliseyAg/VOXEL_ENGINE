@@ -7,7 +7,8 @@
 
 namespace Rendering
 {
-	Chunks::Chunks(int w, int h, int d) : m_w(w), m_h(h), m_d(d) {
+	Chunks::Chunks(int w, int h, int d) : m_w(w), m_h(h), m_d(d)
+	{
 		volume = w * h * d;
 		chunks = new Chunk * [volume];
 
@@ -22,14 +23,16 @@ namespace Rendering
 		}
 	}
 
-	Chunks::~Chunks() {
+	Chunks::~Chunks()
+	{
 		for (size_t i = 0; i < volume; i++) {
 			delete chunks[i];
 		}
 		delete[] chunks;
 	}
 
-	Voxel* Chunks::get(int x, int y, int z) {
+	Voxel* Chunks::get(int x, int y, int z)
+	{
 		int cx = x / CHUNK_W;
 		int cy = y / CHUNK_H;
 		int cz = z / CHUNK_D;
@@ -45,13 +48,15 @@ namespace Rendering
 		return &chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx];
 	}
 
-	Chunk* Chunks::getChunk(int x, int y, int z) {
+	Chunk* Chunks::getChunk(int x, int y, int z)
+	{
 		if (x < 0 || y < 0 || z < 0 || x >= m_w || y >= m_h || z >= m_d)
 			return nullptr;
 		return chunks[(y * m_d + z) * m_w + x];
 	}
 
-	void Chunks::set(int x, int y, int z, int id) {
+	void Chunks::set(int x, int y, int z, int id)
+	{
 		int cx = x / CHUNK_W;
 		int cy = y / CHUNK_H;
 		int cz = z / CHUNK_D;
@@ -76,7 +81,8 @@ namespace Rendering
 		if (lz == CHUNK_D - 1 && (chunk = getChunk(cx, cy, cz + 1))) chunk->modified = true;
 	}
 
-	Voxel* Chunks::rayCast(glm::vec3 a, glm::vec3 dir, float maxDist, glm::vec3& end, glm::vec3& norm, glm::vec3& iend) {
+	Voxel* Chunks::rayCast(glm::vec3 a, glm::vec3 dir, float maxDist, glm::vec3& end, glm::vec3& norm, glm::vec3& iend)
+	{
 		float px = a.x;
 		float py = a.y;
 		float pz = a.z;

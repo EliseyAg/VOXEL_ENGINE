@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
     bool perspective_camera = true;
 
-    Rendering::Camera camera{ glm::vec3(16.f, 16.f, 16.f) };
+    Rendering::Camera camera{ glm::vec3(16.f) };
 
     Resources::ResourceManager::init(argv[0]);
 
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    Rendering::Chunks* chunks = new Rendering::Chunks(4, 4, 4);
+    Rendering::Chunks* chunks = new Rendering::Chunks(8, 8, 1);
     Rendering::Mesh** meshes = new Rendering::Mesh * [chunks->volume];
     for (size_t i = 0; i < chunks->volume; i++)
         meshes[i] = nullptr;

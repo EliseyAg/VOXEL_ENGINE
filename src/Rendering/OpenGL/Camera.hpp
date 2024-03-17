@@ -1,18 +1,18 @@
 #pragma once
 
-#include "glm/vec2.hpp"
+#include <glm/vec3.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
 
-namespace Rendering {
-
-    class Camera
-    {
-    public:
-        enum class ProjectionMode
-        {
-            Perspective,
-            Orthograthic
-        };
+namespace Rendering
+{
+	class Camera
+	{
+	public:
+		enum class ProjectionMode
+		{
+			Perspective,
+			Orthograthic
+		};
 
         Camera(const glm::vec3& position = { 0, 0, 0 },
             const glm::vec3& rotation = { 0, 0, 0 },
@@ -72,5 +72,4 @@ namespace Rendering {
 
         bool m_update_view_matrix = false;
     };
-
 }
