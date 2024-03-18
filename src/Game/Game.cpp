@@ -94,10 +94,10 @@ namespace Game
             glm::vec3 iend;
             Rendering::Voxel* vox = chunks->rayCast(camera.get_position(), camera.get_direction(), 10.0f, end, norm, iend);
             if (vox != nullptr) {
-                if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
+                if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
                     chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
                 }
-                else if (Events::Input::IsMouseButtonPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
+                else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
                     chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
                 }
             }

@@ -104,6 +104,7 @@ int main(int argc, char** argv)
            break;
        }
 
+       Events::Input::update();
        m_pWindow->on_update();
     }
 
