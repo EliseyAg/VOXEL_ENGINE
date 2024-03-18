@@ -56,7 +56,7 @@ namespace Rendering
         glm::vec3 m_right;
         glm::vec3 m_up;
 
-        float m_far_clip_plane{ 100.f };
+        float m_far_clip_plane{ 1000.f };
         float m_near_clip_plane{ 0.1f };
         float m_viewport_width{ 720.f };
         float m_viewport_height{ 720.f };

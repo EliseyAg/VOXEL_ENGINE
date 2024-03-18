@@ -72,7 +72,7 @@ namespace Game
         {
             movement_delta.z += 0.005f;
         }
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_ESCAPE))
+        if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_ESCAPE))
         {
             switch (m_eCurrentGameState)
             {
