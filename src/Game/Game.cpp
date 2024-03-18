@@ -50,27 +50,27 @@ namespace Game
 
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))
         {
-            movement_delta.x += 0.005f;
+            movement_delta.x += 0.001f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_A))
         {
-            movement_delta.y -= 0.005f;
+            movement_delta.y -= 0.001f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))
         {
-            movement_delta.x -= 0.005f;
+            movement_delta.x -= 0.001f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_D))
         {
-            movement_delta.y += 0.005f;
+            movement_delta.y += 0.001f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_Q))
         {
-            movement_delta.z -= 0.005f;
+            movement_delta.z -= 0.001f;
         }
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_E))
         {
-            movement_delta.z += 0.005f;
+            movement_delta.z += 0.001f;
         }
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_ESCAPE))
         {
@@ -98,7 +98,7 @@ namespace Game
                     chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
                 }
                 else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
-                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 2);
+                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 3);
                 }
             }
             break;

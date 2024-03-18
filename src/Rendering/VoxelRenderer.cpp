@@ -1,4 +1,5 @@
 #include "VoxelRenderer.hpp"
+#include "../Resources/ResourceManager.hpp"
 #include "Voxels/Voxel.hpp"
 #include "Voxels/Chunk.hpp"
 #include "OpenGL/Mesh.hpp"
@@ -47,105 +48,89 @@ namespace Rendering
 
 					float l;
 					float uvsize = 1.0f / 8.0f;
-					float u, v;
-					uint8_t top_id, bok_id, bot_id;
+					float u1, u2, v1, v2;
 
-					switch (id)
-					{
-					case 0:
-						break;
-					case 1:
-						top_id = 1;
-						bok_id = 2;
-						bot_id = 3;
-						break;
-					case 2:
-						top_id = 3;
-						bok_id = 3;
-						bot_id = 3;
-						break;
-					case 3:
-						top_id = 4;
-						bok_id = 4;
-						bot_id = 4;
-						break;
-					case 4:
-						top_id = 5;
-						bok_id = 6;
-						bot_id = 5;
-						break;
-					}
+					auto pTexture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
+					auto subTexture = pTexture->getSubTexture(id_subtextures[id].second[1]);
+					u1 = subTexture.leftBottomUV.x;
+					u2 = subTexture.rightTopUV.x;
+					v1 = subTexture.leftBottomUV.y;
+					v2 = subTexture.rightTopUV.y;
 
-					u = (bok_id % 16) * uvsize;
-					v = 1 - ((1 + bok_id / 16) * uvsize);
 					if (!IS_BLOCKED(x, y + 1, z)) {
 						l = 1.0f;
-						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u2, v1, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u1, v2, l);
 
-						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u, v, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u2, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u1, v2, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u1, v1, l);
 					}
 
 					if (!IS_BLOCKED(x, y - 1, z)) {
 						l = 0.75f;
-						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u, v + uvsize, l);
-
-						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u2, v2, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u1, v2, l);
+																	 
+						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u2, v1, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u2, v2, l);
 					}
 
 					if (!IS_BLOCKED(x + 1, y, z)) {
 						l = 0.95f;
-						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u2, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
 
-						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u, v + uvsize, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u1, v2, l);
 					}
 
 					if (!IS_BLOCKED(x - 1, y, z)) {
 						l = 0.85f;
-						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u2, v1, l);
 
-						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u, v, l);
-						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u, v + uvsize, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u1, v2, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
 					}
 
-					u = (top_id % 16) * uvsize;
-					v = 1 - ((1 + top_id / 16) * uvsize);
+					subTexture = pTexture->getSubTexture(id_subtextures[id].second[0]);
+					u1 = subTexture.leftBottomUV.x;
+					u2 = subTexture.rightTopUV.x;
+					v1 = subTexture.leftBottomUV.y;
+					v2 = subTexture.rightTopUV.y;
 					if (!IS_BLOCKED(x, y, z + 1)) {
 						l = 0.9f;
-						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u1, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u1, v2, l);
 
-						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u, v, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u + uvsize, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z + 0.5f, u1, v1, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u2, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u2, v2, l);
 					}
 
-					u = (bot_id % 16) * uvsize;
-					v = 1 - ((1 + bot_id / 16) * uvsize);
+					subTexture = pTexture->getSubTexture(id_subtextures[id].second[2]);
+					u1 = subTexture.leftBottomUV.x;
+					u2 = subTexture.rightTopUV.x;
+					v1 = subTexture.leftBottomUV.y;
+					v2 = subTexture.rightTopUV.y;
 					if (!IS_BLOCKED(x, y, z - 1)) {
 						l = 0.8f;
-						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u + uvsize, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u, v + uvsize, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u2, v1, l);
+						VERTEX(index, x - 0.5f, y + 0.5f, z - 0.5f, u2, v2, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u1, v2, l);
 
-						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u + uvsize, v, l);
-						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u, v + uvsize, l);
-						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u, v, l);
+						VERTEX(index, x - 0.5f, y - 0.5f, z - 0.5f, u2, v1, l);
+						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u1, v2, l);
+						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u1, v1, l);
 					}
 				}
 			}
