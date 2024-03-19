@@ -23,6 +23,10 @@ namespace Rendering
 					if (real_z <= 5)
 						id = 3;
 					voxels[(y * CHUNK_D + z) * CHUNK_W + x].id = id;
+					if (id == 0 || id == 5)
+						voxels[(y * CHUNK_D + z) * CHUNK_W + x].isTransparent = true;
+					else
+						voxels[(y * CHUNK_D + z) * CHUNK_W + x].isTransparent = false;
 				}
 			}
 		}
