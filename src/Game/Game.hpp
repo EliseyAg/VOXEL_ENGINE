@@ -14,8 +14,8 @@ namespace Game
         Game(const glm::ivec2& windowSize);
         ~Game();
 
-        void render(glm::vec2& current_cursor_position);
-        void update(const uint64_t delta);
+        void render();
+        void update(const uint64_t delta, glm::vec2& current_cursor_position);
         bool init();
 
         void update_winsize(glm::ivec2& windowSize);

@@ -43,7 +43,7 @@ namespace Game
         player.set_viewport_size(m_windowSize.x, m_windowSize.y);
     }
 
-    void Game::render(glm::vec2& current_cursor_position)
+    void Game::render()
     {
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_ESCAPE))
         {
@@ -57,29 +57,7 @@ namespace Game
                 break;
             }
         }
-        switch (m_eCurrentGameState)
-        {
-        case EGameState::Active:
-            glm::vec3 rotation_delta{ 0, 0, 0 };
-            rotation_delta.z += glm::degrees(static_cast<float>(m_windowSize.x / 2 - current_cursor_position.x) * 0.01f);
-            rotation_delta.y -= glm::degrees(static_cast<float>(m_windowSize.y / 2 - current_cursor_position.y) * 0.01f);
-            glm::vec3 end;
-            glm::vec3 norm;
-            glm::vec3 iend;
-            Rendering::Voxel* vox = chunks->rayCast(player.get_position(), player.get_direction(), 10.0f, end, norm, iend);
-            if (vox != nullptr) {
-                if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
-                    chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
-                }
-                else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
-                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), player.get_current());
-                }
-            }
-            player.add_rotation(rotation_delta);
-            break;
-        //case EGameState::Pause:
-        //    break;
-        }
+        
 
         Rendering::Chunk* closes[27];
         for (size_t i = 0; i < chunks->volume; i++) {
@@ -124,8 +102,31 @@ namespace Game
         }
     }
 
-    void Game::update(const uint64_t delta)
+    void Game::update(const uint64_t delta, glm::vec2& current_cursor_position)
     {
+        switch (m_eCurrentGameState)
+        {
+        case EGameState::Active:
+            glm::vec3 rotation_delta{ 0, 0, 0 };
+            rotation_delta.z += glm::degrees(static_cast<float>(m_windowSize.x / 2 - current_cursor_position.x)) * delta * 0.00000001f;
+            rotation_delta.y -= glm::degrees(static_cast<float>(m_windowSize.y / 2 - current_cursor_position.y)) * delta * 0.00000001f;
+            glm::vec3 end;
+            glm::vec3 norm;
+            glm::vec3 iend;
+            Rendering::Voxel* vox = chunks->rayCast(player.get_position(), player.get_direction(), 10.0f, end, norm, iend);
+            if (vox != nullptr) {
+                if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
+                    chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
+                }
+                else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
+                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), player.get_current());
+                }
+            }
+            player.add_rotation(rotation_delta);
+            break;
+            //case EGameState::Pause:
+            //    break;
+        }
         player.on_update(delta);
     }
 

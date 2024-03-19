@@ -91,9 +91,9 @@ int main(int argc, char** argv)
        uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - lastTime).count();
        lastTime = currentTime;
 
-       m_game.update(duration);
+       m_game.update(duration, m_pWindow->get_current_cursor_position());
 
-       m_game.render(m_pWindow->get_current_cursor_position());
+       m_game.render();
 
        switch (m_game.get_GameState())
        {

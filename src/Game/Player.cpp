@@ -7,7 +7,8 @@ namespace Game
         : m_position(position)
         , m_rotation(rotation)
 	{
-		current = 1;
+        camera.set_position_rotation(m_position, m_rotation);
+        m_direction = camera.get_direction();
 	}
 
 	Player::~Player()
