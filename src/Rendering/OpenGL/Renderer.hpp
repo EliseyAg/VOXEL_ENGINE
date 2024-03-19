@@ -1,4 +1,5 @@
 #pragma once
+#include "glad/glad.h"
 
 namespace Rendering
 {
@@ -9,8 +10,14 @@ namespace Rendering
 	class Renderer
 	{
 	public:
-		static void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader);
-		static void draw(const VertexArray& vertexArray, const ShaderProgram& shader, int vertices);
+		enum class Primitives
+		{
+			TRIANGLES = GL_TRIANGLES,
+			LINES = GL_LINES
+		};
+
+		static void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader, Primitives primitive);
+		static void draw(const VertexArray& vertexArray, const ShaderProgram& shader, int vertices, Primitives primitive);
 		static void setClearColor(float r, float g, float b, float a);
 		static void clear();
 		static void setDepth(const bool enable);

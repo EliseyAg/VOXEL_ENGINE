@@ -135,6 +135,6 @@ namespace Rendering
 				}
 			}
 		}
-		return new Mesh(index / VERTEX_SIZE, buffer, "DefaultShader");
+		return new Mesh(index / VERTEX_SIZE, buffer, "DefaultShader", true);
 	}
 }

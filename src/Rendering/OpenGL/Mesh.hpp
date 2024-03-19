@@ -14,10 +14,11 @@ namespace Rendering
 	class Mesh
 	{
 	public:
-		Mesh(size_t vert, float vertices[], std::string ShaderName);
+		Mesh(size_t vert, float vertices[], std::string ShaderName, bool is_triangle);
 		~Mesh();
 
 		void render();
+
 	private:
 		size_t m_vert;
 		size_t m_indices;
@@ -26,5 +27,7 @@ namespace Rendering
 		std::shared_ptr<VertexArray> m_vertexArray = std::make_shared<VertexArray>();
 		std::shared_ptr<ShaderProgram> m_shaderProgram;
 		std::shared_ptr<Texture2D> m_texture;
+
+		bool is_Triangles;
 	};
 }

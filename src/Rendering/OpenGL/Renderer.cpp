@@ -5,21 +5,21 @@
 
 namespace Rendering
 {
-	void Renderer::draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader)
+	void Renderer::draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader, Primitives primitive)
 	{
 		shader.bind();
 		vertexArray.bind();
 		indexBuffer.bind();
 
-		glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(static_cast<size_t>(primitive), indexBuffer.getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
-	void Renderer::draw(const VertexArray& vertexArray, const ShaderProgram& shader, int vertices)
+	void Renderer::draw(const VertexArray& vertexArray, const ShaderProgram& shader, int vertices, Primitives primitive)
 	{
 		shader.bind();
 		vertexArray.bind();
 
-		glDrawArrays(GL_TRIANGLES, 0, vertices);
+		glDrawArrays(static_cast<size_t>(primitive), 0, vertices);
 	}
 
 	void Renderer::setClearColor(float r, float g, float b, float a)

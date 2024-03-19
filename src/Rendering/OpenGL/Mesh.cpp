@@ -4,7 +4,7 @@
 
 namespace Rendering
 {
-	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName) : m_vert(vert)
+	Mesh::Mesh(size_t vert, float vertices[], std::string ShaderName, bool is_triangle) : m_vert(vert), is_Triangles(is_triangle)
 	{
         m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
         m_texture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
@@ -28,7 +28,7 @@ namespace Rendering
     void Mesh::render()
     {
         m_texture->bind();
-        Rendering::Renderer::draw(*m_vertexArray, *m_shaderProgram, m_vert);
+        Rendering::Renderer::draw(*m_vertexArray, *m_shaderProgram, m_vert, is_Triangles ? Renderer::Primitives::TRIANGLES : Renderer::Primitives::LINES);
         m_vertexArray->unbind();
     }
 }
