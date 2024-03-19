@@ -4,7 +4,7 @@
 #include "OpenGL/Mesh.hpp"
 #include "../Resources/ResourceManager.hpp"
 
-#define VERTEX_SIZE (3 + 2 + 0)
+#define VERTEX_SIZE (3 + 2 + 1)
 
 #define CDIV(X,A) (((X) < 0) ? ((X) / (A) - 1) : ((X) / (A)))
 #define LOCAL_NEG(X, SIZE) (((X) < 0) ? ((SIZE)+(X)) : (X))
@@ -20,6 +20,7 @@
 									buffer[INDEX+2] = (Z);\
 									buffer[INDEX+3] = (U);\
 									buffer[INDEX+4] = (V);\
+									buffer[INDEX+5] = (L);\
 									INDEX += VERTEX_SIZE;
 
 namespace Rendering

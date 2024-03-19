@@ -13,9 +13,6 @@
 
 namespace Game
 {
-    float scale[3] = { 1.f, 1.f, 1.f };
-    float translate[3] = { 0.f, 0.f, 0.f };
-
     bool perspective_camera = true;
 
     Rendering::Chunks* chunks;

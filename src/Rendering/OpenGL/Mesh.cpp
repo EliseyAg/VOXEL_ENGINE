@@ -9,13 +9,14 @@ namespace Rendering
         m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
         m_texture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
 
-        BufferLayout buffer_layout_vec3_vec2
+        BufferLayout buffer_layout_vec3_vec2_float
         {
             ShaderDataType::Float3,
-            ShaderDataType::Float2
+            ShaderDataType::Float2,
+            ShaderDataType::Float
         };
 
-        m_buffer = std::make_shared<VertexBuffer>(vertices, 5 * vert * sizeof(float), buffer_layout_vec3_vec2);
+        m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec3_vec2_float);
         m_vertexArray->addBuffer(*m_buffer);
 	}
 
