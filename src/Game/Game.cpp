@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Player.hpp"
 #include "../Rendering/OpenGL/ShaderProgram.hpp"
 #include "../Rendering/OpenGL/Renderer.hpp"
 #include "../Rendering/OpenGL/Mesh.hpp"
@@ -21,7 +22,7 @@ namespace Game
     Rendering::Mesh** meshes;
     Rendering::VoxelRenderer renderer(1024 * 1024 * 8);
 
-    Rendering::Camera camera{ glm::vec3(16.f) };
+    Player player{ glm::vec3(16.f) };
     std::shared_ptr<Rendering::ShaderProgram> pDefaultShaderProgram;
 
     Game::Game(const glm::ivec2& windowSize)
@@ -39,39 +40,11 @@ namespace Game
     void Game::update_winsize(glm::ivec2& windowSize)
     {
         m_windowSize = windowSize;
-        camera.set_viewport_size(m_windowSize.x, m_windowSize.y);
+        player.set_viewport_size(m_windowSize.x, m_windowSize.y);
     }
 
     void Game::render(glm::vec2& current_cursor_position)
     {
-        bool move_camera = false;
-        glm::vec3 movement_delta{ 0, 0, 0 };
-        glm::vec3 rotation_delta{ 0, 0, 0 };
-
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))
-        {
-            movement_delta.x += 0.001f;
-        }
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_A))
-        {
-            movement_delta.y -= 0.001f;
-        }
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))
-        {
-            movement_delta.x -= 0.001f;
-        }
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_D))
-        {
-            movement_delta.y += 0.001f;
-        }
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_Q))
-        {
-            movement_delta.z -= 0.001f;
-        }
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_E))
-        {
-            movement_delta.z += 0.001f;
-        }
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_ESCAPE))
         {
             switch (m_eCurrentGameState)
@@ -87,25 +60,26 @@ namespace Game
         switch (m_eCurrentGameState)
         {
         case EGameState::Active:
+            glm::vec3 rotation_delta{ 0, 0, 0 };
             rotation_delta.z += glm::degrees(static_cast<float>(m_windowSize.x / 2 - current_cursor_position.x) * 0.01f);
             rotation_delta.y -= glm::degrees(static_cast<float>(m_windowSize.y / 2 - current_cursor_position.y) * 0.01f);
             glm::vec3 end;
             glm::vec3 norm;
             glm::vec3 iend;
-            Rendering::Voxel* vox = chunks->rayCast(camera.get_position(), camera.get_direction(), 10.0f, end, norm, iend);
+            Rendering::Voxel* vox = chunks->rayCast(player.get_position(), player.get_direction(), 10.0f, end, norm, iend);
             if (vox != nullptr) {
                 if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
                     chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
                 }
                 else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
-                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), 5);
+                    chunks->set((int)(iend.x) + (int)(norm.x), (int)(iend.y) + (int)(norm.y), (int)(iend.z) + (int)(norm.z), player.get_current());
                 }
             }
+            player.add_rotation(rotation_delta);
             break;
         //case EGameState::Pause:
         //    break;
         }
-        camera.add_movement_and_rotation(movement_delta, rotation_delta);
 
         Rendering::Chunk* closes[27];
         for (size_t i = 0; i < chunks->volume; i++) {
@@ -137,8 +111,8 @@ namespace Game
             meshes[i] = mesh;
         }
 
-        camera.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
-        pDefaultShaderProgram->setMatrix4("view_projection_matrix", camera.get_projection_matrix() * camera.get_view_matrix());
+        player.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
+        pDefaultShaderProgram->setMatrix4("view_projection_matrix", player.get_projection_matrix() * player.get_view_matrix());
 
         glm::mat4 model_matrix(1.0f);
         for (size_t i = 0; i < chunks->volume; i++) {
@@ -152,7 +126,7 @@ namespace Game
 
     void Game::update(const uint64_t delta)
     {
-        camera.set_viewport_size(m_windowSize.x, m_windowSize.y);
+        player.on_update(delta);
     }
 
     bool Game::init()
@@ -162,7 +136,7 @@ namespace Game
         for (size_t i = 0; i < chunks->volume; i++)
             meshes[i] = nullptr;
 
-        camera.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
+        player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
         pDefaultShaderProgram = Resources::ResourceManager::getShaderProgram("DefaultShader");
         return 0;
     }

@@ -39,7 +39,6 @@ namespace Rendering
 
         const glm::vec3& get_position() const { return m_position; }
         const glm::vec3& get_rotation() const { return m_rotation; }
-
         const glm::vec3& get_direction() const { return m_direction; }
 
         void add_movement_and_rotation(const glm::vec3& movement_delta,
