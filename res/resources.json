@@ -1,9 +1,15 @@
 {
 	"shaders" : [
 		{
-			"name" 		 : "DefaultShader",
+			"name" 		 : "DefaultShaderProgram",
 			"filePath_v" : "res/shaders/vertex.txt",
 			"filePath_f" : "res/shaders/fragment.txt"
+		},
+		
+		{
+			"name" 		 : "LinesShaderProgram",
+			"filePath_v" : "res/shaders/v_Line.txt",
+			"filePath_f" : "res/shaders/f_Line.txt"
 		}
 	],
 	

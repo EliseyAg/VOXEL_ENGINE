@@ -7,6 +7,7 @@
 #include "../Rendering/Voxels/Chunk.hpp"
 #include "../Rendering/Voxels/Chunks.hpp"
 #include "../Rendering/VoxelRenderer.hpp"
+#include "../Rendering/LineBatch.hpp"
 #include "../Resources/ResourceManager.hpp"
 #include "../Events/Input.hpp"
 #include "../Events/Keys.hpp"
@@ -18,6 +19,7 @@ namespace Game
     Rendering::Chunks* chunks;
     Rendering::Mesh** meshes;
     Rendering::VoxelRenderer renderer(1024 * 1024 * 8);
+    Rendering::LineBatch* lineBatch = new Rendering::LineBatch(4096);
 
     Player player{ glm::vec3(16.f) };
     std::shared_ptr<Rendering::ShaderProgram> pDefaultShaderProgram;
@@ -97,6 +99,8 @@ namespace Game
             pDefaultShaderProgram->setMatrix4("model_matrix", model_matrix);
             mesh->render();
         }
+
+        lineBatch->render();
     }
 
     void Game::update(const uint64_t delta, glm::vec2& current_cursor_position)
@@ -111,7 +115,9 @@ namespace Game
             glm::vec3 norm;
             glm::vec3 iend;
             Rendering::Voxel* vox = chunks->rayCast(player.get_position(), player.get_direction(), 10.0f, end, norm, iend);
-            if (vox != nullptr) {
+            if (vox != nullptr)
+            {
+                lineBatch->box(iend.x + 0.5f, iend.y + 0.5f, iend.z + 0.5f, 1.005f, 1.005f, 1.005f, 0, 0, 0, 0.5f);
                 if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_RIGHT)) {
                     chunks->set((int)iend.x, (int)iend.y, (int)iend.z, 0);
                 }
@@ -135,7 +141,7 @@ namespace Game
             meshes[i] = nullptr;
 
         player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
-        pDefaultShaderProgram = Resources::ResourceManager::getShaderProgram("DefaultShader");
+        pDefaultShaderProgram = Resources::ResourceManager::getShaderProgram("DefaultShaderProgram");
         return 0;
     }
 }

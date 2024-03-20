@@ -20,6 +20,8 @@ namespace Rendering
 		vertexArray.bind();
 
 		glDrawArrays(static_cast<size_t>(primitive), 0, vertices);
+
+		vertexArray.unbind();
 	}
 
 	void Renderer::setClearColor(float r, float g, float b, float a)

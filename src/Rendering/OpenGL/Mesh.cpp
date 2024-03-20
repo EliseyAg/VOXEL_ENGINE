@@ -9,20 +9,63 @@ namespace Rendering
         m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
         m_texture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
 
-        BufferLayout buffer_layout_vec3_vec2_float
+        if (is_Triangles)
         {
-            ShaderDataType::Float3,
-            ShaderDataType::Float2,
-            ShaderDataType::Float
-        };
+            BufferLayout buffer_layout_vec3_vec2_float
+            {
+                ShaderDataType::Float3,
+                ShaderDataType::Float2,
+                ShaderDataType::Float
+            };
 
-        m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec3_vec2_float);
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec3_vec2_float);
+        }
+        else
+        {
+            BufferLayout buffer_layout_vec2_vec4
+            {
+                ShaderDataType::Float2,
+                ShaderDataType::Float4
+            };
+
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec2_vec4);
+        }
         m_vertexArray->addBuffer(*m_buffer);
 	}
 
     Mesh::~Mesh()
     {
 
+    }
+
+    void Mesh::update(size_t vert, float vertices[], std::string ShaderName)
+    {
+        m_vert = vert;
+        m_shaderProgram = Resources::ResourceManager::getShaderProgram(ShaderName);
+        m_texture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
+
+        if (is_Triangles)
+        {
+            BufferLayout buffer_layout_vec3_vec2_float
+            {
+                ShaderDataType::Float3,
+                ShaderDataType::Float2,
+                ShaderDataType::Float
+            };
+
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec3_vec2_float);
+        }
+        else
+        {
+            BufferLayout buffer_layout_vec2_vec4
+            {
+                ShaderDataType::Float2,
+                ShaderDataType::Float4
+            };
+
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec2_vec4);
+        }
+        m_vertexArray->addBuffer(*m_buffer);
     }
 
     void Mesh::render()
