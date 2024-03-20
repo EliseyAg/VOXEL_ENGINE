@@ -21,6 +21,7 @@ namespace Rendering
 
 		bool isCompiled() const { return m_isCompiled; }
 		void bind() const;
+		void unbind() const;
 
 		void setInt(const std::string& name, const GLint value);
 		void setVec3(const std::string& name, const glm::vec3& value);

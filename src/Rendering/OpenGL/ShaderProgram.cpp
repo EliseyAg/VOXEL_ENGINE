@@ -74,6 +74,11 @@ namespace Rendering
         glUseProgram(m_ID);
     }
 
+    void ShaderProgram::unbind() const
+    {
+        glUseProgram(0);
+    }
+
     ShaderProgram& ShaderProgram::operator=(ShaderProgram&& shaderProgram) noexcept
     {
         glDeleteProgram(m_ID);

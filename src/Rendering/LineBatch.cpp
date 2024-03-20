@@ -1,7 +1,7 @@
 #include "LineBatch.hpp"
 #include "OpenGL/Mesh.hpp"
 
-#define LB_VERTEX_SIZE (2 + 4)
+#define LB_VERTEX_SIZE (3 + 4)
 
 namespace Rendering
 {
@@ -43,20 +43,20 @@ namespace Rendering
 		h *= 0.5f;
 		d *= 0.5f;
 
-		line(x - w, y - h, z - d, x + w, y - h, z - d, r, g, b, a);
-		line(x - w, y + h, z - d, x + w, y + h, z - d, r, g, b, a);
-		line(x - w, y - h, z + d, x + w, y - h, z + d, r, g, b, a);
-		line(x - w, y + h, z + d, x + w, y + h, z + d, r, g, b, a);
+		line(x - w, y - d, z - h, x + w, y - d, z - h, r, g, b, a);
+		line(x - w, y + d, z - h, x + w, y + d, z - h, r, g, b, a);
+		line(x - w, y - d, z + h, x + w, y - d, z + h, r, g, b, a);
+		line(x - w, y + d, z + h, x + w, y + d, z + h, r, g, b, a);
 
-		line(x - w, y - h, z - d, x - w, y + h, z - d, r, g, b, a);
-		line(x + w, y - h, z - d, x + w, y + h, z - d, r, g, b, a);
-		line(x - w, y - h, z + d, x - w, y + h, z + d, r, g, b, a);
-		line(x + w, y - h, z + d, x + w, y + h, z + d, r, g, b, a);
+		line(x - w, y - d, z - h, x - w, y + d, z - h, r, g, b, a);
+		line(x + w, y - d, z - h, x + w, y + d, z - h, r, g, b, a);
+		line(x - w, y - d, z + h, x - w, y + d, z + h, r, g, b, a);
+		line(x + w, y - d, z + h, x + w, y + d, z + h, r, g, b, a);
 
-		line(x - w, y - h, z - d, x - w, y - h, z + d, r, g, b, a);
-		line(x + w, y - h, z - d, x + w, y - h, z + d, r, g, b, a);
-		line(x - w, y + h, z - d, x - w, y + h, z + d, r, g, b, a);
-		line(x + w, y + h, z - d, x + w, y + h, z + d, r, g, b, a);
+		line(x - w, y - d, z - h, x - w, y - d, z + h, r, g, b, a);
+		line(x + w, y - d, z - h, x + w, y - d, z + h, r, g, b, a);
+		line(x - w, y + d, z - h, x - w, y + d, z + h, r, g, b, a);
+		line(x + w, y + d, z - h, x + w, y + d, z + h, r, g, b, a);
 	}
 
 	void LineBatch::render()

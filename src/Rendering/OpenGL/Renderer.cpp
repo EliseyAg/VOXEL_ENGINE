@@ -19,6 +19,7 @@ namespace Rendering
 		shader.bind();
 		vertexArray.bind();
 
+		if (primitive == Primitives::LINES) glLineWidth(2.0f);
 		glDrawArrays(static_cast<size_t>(primitive), 0, vertices);
 
 		vertexArray.unbind();

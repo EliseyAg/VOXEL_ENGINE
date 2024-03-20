@@ -23,6 +23,7 @@ namespace Game
 
     Player player{ glm::vec3(16.f) };
     std::shared_ptr<Rendering::ShaderProgram> pDefaultShaderProgram;
+    std::shared_ptr<Rendering::ShaderProgram> pLinesShaderProgram;
 
     Game::Game(const glm::ivec2& windowSize)
         : m_eCurrentGameState(EGameState::Active)
@@ -89,7 +90,8 @@ namespace Game
         }
 
         player.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
-        pDefaultShaderProgram->setMatrix4("view_projection_matrix", player.get_projection_matrix() * player.get_view_matrix());
+        pDefaultShaderProgram->bind();
+        pDefaultShaderProgram->setMatrix4("projection_view_matrix", player.get_projection_matrix() * player.get_view_matrix());
 
         glm::mat4 model_matrix(1.0f);
         for (size_t i = 0; i < chunks->volume; i++) {
@@ -100,6 +102,8 @@ namespace Game
             mesh->render();
         }
 
+        pLinesShaderProgram->bind();
+        pLinesShaderProgram->setMatrix4("projview", player.get_projection_matrix() * player.get_view_matrix());
         lineBatch->render();
     }
 
@@ -142,6 +146,7 @@ namespace Game
 
         player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
         pDefaultShaderProgram = Resources::ResourceManager::getShaderProgram("DefaultShaderProgram");
+        pLinesShaderProgram = Resources::ResourceManager::getShaderProgram("LinesShaderProgram");
         return 0;
     }
 }

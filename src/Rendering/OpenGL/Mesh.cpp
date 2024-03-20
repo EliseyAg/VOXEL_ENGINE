@@ -22,13 +22,13 @@ namespace Rendering
         }
         else
         {
-            BufferLayout buffer_layout_vec2_vec4
+            BufferLayout buffer_layout_vec3_vec4
             {
-                ShaderDataType::Float2,
+                ShaderDataType::Float3,
                 ShaderDataType::Float4
             };
 
-            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec2_vec4);
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 7 * vert * sizeof(float), buffer_layout_vec3_vec4);
         }
         m_vertexArray->addBuffer(*m_buffer);
 	}
@@ -57,13 +57,13 @@ namespace Rendering
         }
         else
         {
-            BufferLayout buffer_layout_vec2_vec4
+            BufferLayout buffer_layout_vec3_vec4
             {
-                ShaderDataType::Float2,
+                ShaderDataType::Float3,
                 ShaderDataType::Float4
             };
 
-            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec2_vec4);
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 7 * vert * sizeof(float), buffer_layout_vec3_vec4);
         }
         m_vertexArray->addBuffer(*m_buffer);
     }
@@ -72,6 +72,5 @@ namespace Rendering
     {
         m_texture->bind();
         Rendering::Renderer::draw(*m_vertexArray, *m_shaderProgram, m_vert, is_Triangles ? Renderer::Primitives::TRIANGLES : Renderer::Primitives::LINES);
-        m_vertexArray->unbind();
     }
 }
