@@ -9,5 +9,10 @@ namespace Rendering
 		std::make_pair<uint8_t, std::vector<std::string>>(3, {"Coblestone", "Coblestone", "Coblestone"}),
 		std::make_pair<uint8_t, std::vector<std::string>>(4, {"WoodTop", "WoodLeft", "WoodTop"}),
 		std::make_pair<uint8_t, std::vector<std::string>>(5, {"Green", "Green", "Green"}),
+		std::make_pair<uint8_t, std::vector<std::string>>(6, {"Unknown", "Unknown", "Unknown"}),
+		std::make_pair<uint8_t, std::vector<std::string>>(7, {"BirchTop", "BirchLeft", "BirchTop"}),
+		std::make_pair<uint8_t, std::vector<std::string>>(8, {"Wood_Planks", "Wood_Planks", "Wood_Planks"}),
+		std::make_pair<uint8_t, std::vector<std::string>>(9, {"Wood_Planks", "Wood_Planks", "Wood_Planks"}),
+		std::make_pair<uint8_t, std::vector<std::string>>(10, {"Wood_Planks", "Wood_Planks", "Wood_Planks"}),
 	};
 }

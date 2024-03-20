@@ -69,13 +69,6 @@ int main(int argc, char** argv)
             Events::Input::ReleaseMouseButton(event.mouse_button);
         });
 
-    auto pDefaultShaderProgram = Resources::ResourceManager::loadShaderProgram("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
-    if (!pDefaultShaderProgram)
-    {
-        std::cerr << "Can't create shader program: " << "DefaultShader" << std::endl;
-        return -1;
-    }
-
     Resources::ResourceManager::loadJSONResources("res/resources.json");
     bool resultCode = m_game.init();
 
@@ -110,5 +103,6 @@ int main(int argc, char** argv)
 
     Resources::ResourceManager::unloadAllResources();
     m_pWindow = nullptr;
+
     return resultCode;
 }

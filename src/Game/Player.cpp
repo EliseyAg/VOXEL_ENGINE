@@ -29,11 +29,11 @@ namespace Game
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_3))    current = 3;
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_4))    current = 4;
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_5))    current = 5;
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_6))    current = 1;
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_7))    current = 1;
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_8))    current = 1;
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_9))    current = 1;
-        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_0))    current = 1;
+        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_6))    current = 6;
+        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_7))    current = 7;
+        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_8))    current = 8;
+        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_9))    current = 9;
+        if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_0))    current = 10;
 
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_W))    movement_delta.x += m_speed * delta * 0.00000001f;
         if (Events::Input::IsKeyPressed(Events::KeyCode::KEY_S))    movement_delta.x -= m_speed * delta * 0.00000001f;
