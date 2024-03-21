@@ -202,4 +202,14 @@ namespace Resources
 
         return true;
     }
+
+    bool ResourceManager::writeBinaryFile(std::string filename, const char* data, size_t size)
+    {
+        std::ofstream output(m_path + "/" + filename, std::ios::binary);
+        if (!output.is_open())
+            return false;
+        output.write(data, size);
+        output.close();
+        return true;
+    }
 }

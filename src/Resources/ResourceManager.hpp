@@ -39,6 +39,8 @@ namespace Resources
 
 		static bool loadJSONResources(const std::string& JSONPath);
 
+		static bool writeBinaryFile(std::string filename, const char* data, size_t size);
+
 	private:
 		static std::string getFileString(const std::string& relativeFilePath);
 

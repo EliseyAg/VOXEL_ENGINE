@@ -12,6 +12,8 @@
 #include "../Events/Input.hpp"
 #include "../Events/Keys.hpp"
 
+#include <iostream>
+
 namespace Game
 {
     bool perspective_camera = true;
@@ -111,6 +113,7 @@ namespace Game
         {
             unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
             chunks->write(buffer);
+            std::cout << Resources::ResourceManager::writeBinaryFile("res/worlds/world.bin", (const char*)buffer, chunks->volume * CHUNK_VOL);
 
             delete[] buffer;
         }
