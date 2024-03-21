@@ -113,7 +113,15 @@ namespace Game
         {
             unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
             chunks->write(buffer);
-            std::cout << Resources::ResourceManager::writeBinaryFile("res/worlds/world.bin", (const char*)buffer, chunks->volume * CHUNK_VOL);
+            Resources::ResourceManager::writeBinaryFile("res/worlds/world.bin", (const char*)buffer, chunks->volume * CHUNK_VOL);
+
+            delete[] buffer;
+        }
+        if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_F4))
+        {
+            unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
+            Resources::ResourceManager::readBinaryFile("res/worlds/world.bin", (char*)buffer, chunks->volume * CHUNK_VOL);
+            chunks->read(buffer);
 
             delete[] buffer;
         }

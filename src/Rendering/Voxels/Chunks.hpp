@@ -23,5 +23,6 @@ namespace Rendering
 		Voxel* rayCast(glm::vec3 start, glm::vec3 dir, float maxLength, glm::vec3& end, glm::vec3& norm, glm::vec3& iend);
 
 		void write(unsigned char* dest);
+		void read(unsigned char* source);
 	};
 }

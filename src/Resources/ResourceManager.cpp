@@ -212,4 +212,14 @@ namespace Resources
         output.close();
         return true;
     }
+
+    bool ResourceManager::readBinaryFile(std::string filename, char* data, size_t size)
+    {
+        std::ifstream input(m_path + "/" + filename, std::ios::binary);
+        if (!input.is_open())
+            return false;
+        input.read(data, size);
+        input.close();
+        return true;
+    }
 }

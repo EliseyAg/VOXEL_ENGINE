@@ -185,8 +185,22 @@ namespace Rendering
 			Chunk* chunk = chunks[i];
 			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
 			{
-				dest[index] = chunk->voxels[i].id;
+				dest[index] = chunk->voxels[j].id;
 			}
+		}
+	}
+
+	void Chunks::read(unsigned char* source)
+	{
+		size_t index = 0;
+		for (size_t i = 0; i < volume; i++)
+		{
+			Chunk* chunk = chunks[i];
+			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
+			{
+				chunk->voxels[j].id = source[index];
+			}
+			chunk->modified = true;
 		}
 	}
 }
