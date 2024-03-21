@@ -45,20 +45,6 @@ namespace Game
 
     void Game::render()
     {
-        if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_ESCAPE))
-        {
-            switch (m_eCurrentGameState)
-            {
-            case EGameState::Active:
-                m_eCurrentGameState = EGameState::Pause;
-                break;
-            case EGameState::Pause:
-                m_eCurrentGameState = EGameState::Active;
-                break;
-            }
-        }
-        
-
         Rendering::Chunk* closes[27];
         for (size_t i = 0; i < chunks->volume; i++) {
             Rendering::Chunk* chunk = chunks->chunks[i];
@@ -109,6 +95,26 @@ namespace Game
 
     void Game::update(const uint64_t delta, glm::vec2& current_cursor_position)
     {
+        if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_ESCAPE))
+        {
+            switch (m_eCurrentGameState)
+            {
+            case EGameState::Active:
+                m_eCurrentGameState = EGameState::Pause;
+                break;
+            case EGameState::Pause:
+                m_eCurrentGameState = EGameState::Active;
+                break;
+            }
+        }
+        if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_F3))
+        {
+            unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
+            chunks->write(buffer);
+
+            delete[] buffer;
+        }
+
         switch (m_eCurrentGameState)
         {
         case EGameState::Active:

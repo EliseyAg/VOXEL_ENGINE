@@ -176,4 +176,17 @@ namespace Rendering
 		norm.x = norm.y = norm.z = 0.0f;
 		return nullptr;
 	}
+
+	void Chunks::write(unsigned char* dest)
+	{
+		size_t index = 0;
+		for (size_t i = 0; i < volume; i++)
+		{
+			Chunk* chunk = chunks[i];
+			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
+			{
+				dest[index] = chunk->voxels[i].id;
+			}
+		}
+	}
 }
