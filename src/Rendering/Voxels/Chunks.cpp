@@ -199,6 +199,10 @@ namespace Rendering
 			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
 			{
 				chunk->voxels[j].id = source[index];
+				if (chunk->voxels[j].id == 0 || chunk->voxels[j].id == 5)
+					chunk->voxels[j].isTransparent = true;
+				else
+					chunk->voxels[j].isTransparent = false;
 			}
 			chunk->modified = true;
 		}
