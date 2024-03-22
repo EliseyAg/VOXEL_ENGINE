@@ -33,6 +33,7 @@ set(PUBLIC_INCLUDES
 	src/Rendering/VoxelRenderer.hpp
 	src/Rendering/LineBatch.hpp
 
+	src/Lighting/Lighting.hpp
 	src/Lighting/LightMap.hpp
 	src/Lighting/LightSolver.hpp
 )
@@ -60,6 +61,7 @@ set(PUBLIC_SOURCES
 	src/Rendering/VoxelRenderer.cpp
 	src/Rendering/LineBatch.cpp
 	
+	src/Lighting/Lighting.cpp
 	src/Lighting/LightMap.cpp
 	src/Lighting/LightSolver.cpp
 )

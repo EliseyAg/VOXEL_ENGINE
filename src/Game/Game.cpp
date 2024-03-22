@@ -12,8 +12,7 @@
 #include "../Resources/ResourceManager.hpp"
 #include "../Events/Input.hpp"
 #include "../Events/Keys.hpp"
-#include "../Lighting/LightSolver.hpp"
-#include "../Lighting/LightMap.hpp"
+#include "../Lighting/Lighting.hpp"
 
 #include <iostream>
 
@@ -25,11 +24,6 @@ namespace Game
     Rendering::Mesh** meshes;
     Rendering::VoxelRenderer renderer(1024 * 1024 * 8);
     Rendering::LineBatch* lineBatch = new Rendering::LineBatch(4096);
-
-    Lighting::LightSolver* solverR;
-    Lighting::LightSolver* solverG;
-    Lighting::LightSolver* solverB;
-    Lighting::LightSolver* solverS;
 
     Player player{ glm::vec3(16.f) };
     std::shared_ptr<Rendering::ShaderProgram> pDefaultShaderProgram;
@@ -152,62 +146,14 @@ namespace Game
                     int y = (int)iend.y;
                     int z = (int)iend.z;
                     chunks->set(x, y, z, 0);
-
-                    solverR->remove(x, y, z);
-                    solverG->remove(x, y, z);
-                    solverB->remove(x, y, z);
-
-                    solverR->solve();
-                    solverG->solve();
-                    solverB->solve();
-
-                    if (chunks->getLight(x, y + 1, z, 3) == 0xF) {
-                        for (int i = y; i >= 0; i--) {
-                            if (chunks->get(x, i, z)->id != 0)
-                                break;
-                            solverS->add(x, i, z, 0xF);
-                        }
-                    }
-
-                    solverR->add(x, y + 1, z); solverG->add(x, y + 1, z); solverB->add(x, y + 1, z); solverS->add(x, y + 1, z);
-                    solverR->add(x, y - 1, z); solverG->add(x, y - 1, z); solverB->add(x, y - 1, z); solverS->add(x, y - 1, z);
-                    solverR->add(x + 1, y, z); solverG->add(x + 1, y, z); solverB->add(x + 1, y, z); solverS->add(x + 1, y, z);
-                    solverR->add(x - 1, y, z); solverG->add(x - 1, y, z); solverB->add(x - 1, y, z); solverS->add(x - 1, y, z);
-                    solverR->add(x, y, z + 1); solverG->add(x, y, z + 1); solverB->add(x, y, z + 1); solverS->add(x, y, z + 1);
-                    solverR->add(x, y, z - 1); solverG->add(x, y, z - 1); solverB->add(x, y, z - 1); solverS->add(x, y, z - 1);
-
-                    solverR->solve();
-                    solverG->solve();
-                    solverB->solve();
-                    solverS->solve();
+                    Lighting::Lighting::del(chunks, x, y, z);
                 }
                 else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
                     int x = (int)(iend.x) + (int)(norm.x);
                     int y = (int)(iend.y) + (int)(norm.y);
                     int z = (int)(iend.z) + (int)(norm.z);
                     chunks->set(x, y, z, player.get_current());
-                    solverR->remove(x, y, z);
-                    solverG->remove(x, y, z);
-                    solverB->remove(x, y, z);
-                    solverS->remove(x, y, z);
-                    for (int i = y - 1; i >= 0; i--) {
-                        solverS->remove(x, i, z);
-                        if (i == 0 || chunks->get(x, i - 1, z)->id != 0) {
-                            break;
-                        }
-                    }
-                    solverR->solve();
-                    solverG->solve();
-                    solverB->solve();
-                    solverS->solve();
-                    if (player.get_current() == 5) {
-                        solverR->add(x, y, z, 10);
-                        solverG->add(x, y, z, 10);
-                        solverB->add(x, y, z, 6);
-                        solverR->solve();
-                        solverG->solve();
-                        solverB->solve();
-                    }
+                    Lighting::Lighting::add(chunks, x, y, z, player.get_current() == 5);
                 }
             }
             player.add_rotation(rotation_delta);
@@ -225,63 +171,7 @@ namespace Game
         for (size_t i = 0; i < chunks->volume; i++)
             meshes[i] = nullptr;
 
-
-        solverR = new Lighting::LightSolver(chunks, 0);
-        solverG = new Lighting::LightSolver(chunks, 1);
-        solverB = new Lighting::LightSolver(chunks, 2);
-        solverS = new Lighting::LightSolver(chunks, 3);
-
-        for (int y = 0; y < chunks->m_h * CHUNK_D; y++) {
-            for (int x = 0; x < chunks->m_w * CHUNK_W; x++) {
-                for (int z = 0; z < chunks->m_d * CHUNK_H; z++) {
-                    Rendering::Voxel* vox = chunks->get(x, y, z);
-                    if (vox->id == 0) {
-                        solverR->add(x, y, z, 15);
-                        solverG->add(x, y, z, 15);
-                        solverB->add(x, y, z, 15);
-                    }
-                }
-            }
-        }
-
-        for (int z = 0; z < chunks->m_d * CHUNK_D; z++) {
-            for (int x = 0; x < chunks->m_w * CHUNK_W; x++) {
-                for (int y = chunks->m_h * CHUNK_H - 1; y >= 0; y--) {
-                    Rendering::Voxel* vox = chunks->get(x, y, z);
-                    if (vox->id != 5) {
-                        break;
-                    }
-                    chunks->getChunkByVoxel(x, y, z)->lightMap->setS(x % CHUNK_W, y % CHUNK_H, z % CHUNK_D, 0xF);
-                }
-            }
-        }
-
-        for (int z = 0; z < chunks->m_d * CHUNK_D; z++) {
-            for (int x = 0; x < chunks->m_w * CHUNK_W; x++) {
-                for (int y = chunks->m_h * CHUNK_H - 1; y >= 0; y--) {
-                    Rendering::Voxel* vox = chunks->get(x, y, z);
-                    if (vox->id != 0) {
-                        break;
-                    }
-                    if (
-                        chunks->getLight(x - 1, y, z, 3) == 0 ||
-                        chunks->getLight(x + 1, y, z, 3) == 0 ||
-                        chunks->getLight(x, y - 1, z, 3) == 0 ||
-                        chunks->getLight(x, y + 1, z, 3) == 0 ||
-                        chunks->getLight(x, y, z - 1, 3) == 0 ||
-                        chunks->getLight(x, y, z + 1, 3) == 0
-                        ) {
-                        solverS->add(x, y, z);
-                    }
-                    chunks->getChunkByVoxel(x, y, z)->lightMap->setS(x % CHUNK_W, y % CHUNK_H, z % CHUNK_D, 0xF);
-                }
-            }
-        }
-
-        solverR->solve();
-        solverG->solve();
-        solverB->solve();
-        solverS->solve();
+        Lighting::Lighting::init(chunks);
 
         player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
         pDefaultShaderProgram = Resources::ResourceManager::getShaderProgram("DefaultShaderProgram");
