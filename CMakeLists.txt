@@ -34,6 +34,7 @@ set(PUBLIC_INCLUDES
 	src/Rendering/LineBatch.hpp
 
 	src/Lighting/LightMap.hpp
+	src/Lighting/LightSolver.hpp
 )
 
 set(PUBLIC_SOURCES
@@ -60,6 +61,7 @@ set(PUBLIC_SOURCES
 	src/Rendering/LineBatch.cpp
 	
 	src/Lighting/LightMap.cpp
+	src/Lighting/LightSolver.cpp
 )
 
 set(ALL_SOURCES
