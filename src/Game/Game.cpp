@@ -124,6 +124,7 @@ namespace Game
             unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
             Resources::ResourceManager::readBinaryFile("res/worlds/world.bin", (char*)buffer, chunks->volume * CHUNK_VOL);
             chunks->read(buffer);
+            Lighting::Lighting::init(chunks);
 
             delete[] buffer;
         }
