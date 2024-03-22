@@ -200,10 +200,10 @@ namespace Game
                     solverG->solve();
                     solverB->solve();
                     solverS->solve();
-                    if (player.get_current() == 6) {
-                        solverR->add(x, y, z, 1);
-                        solverG->add(x, y, z, 1);
-                        solverB->add(x, y, z, 1);
+                    if (player.get_current() == 5) {
+                        solverR->add(x, y, z, 10);
+                        solverG->add(x, y, z, 10);
+                        solverB->add(x, y, z, 6);
                         solverR->solve();
                         solverG->solve();
                         solverB->solve();
@@ -248,7 +248,7 @@ namespace Game
             for (int x = 0; x < chunks->m_w * CHUNK_W; x++) {
                 for (int y = chunks->m_h * CHUNK_H - 1; y >= 0; y--) {
                     Rendering::Voxel* vox = chunks->get(x, y, z);
-                    if (vox->id != 6) {
+                    if (vox->id != 5) {
                         break;
                     }
                     chunks->getChunkByVoxel(x, y, z)->lightMap->setS(x % CHUNK_W, y % CHUNK_H, z % CHUNK_D, 0xF);

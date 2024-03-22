@@ -99,7 +99,7 @@ namespace Rendering
 		int ly = y - cy * CHUNK_H;
 		int lz = z - cz * CHUNK_D;
 		chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx].id = id;
-		if (id == 0 || id == 5)
+		if (id == 0 || id == 6)
 			chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx].isTransparent = true;
 		else
 			chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx].isTransparent = false;
