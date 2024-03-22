@@ -5,6 +5,11 @@
 #define CHUNK_D 32
 #define CHUNK_VOL (CHUNK_W * CHUNK_H * CHUNK_D)
 
+namespace Lighting
+{
+	class LightMap;
+}
+
 namespace Rendering
 {
 	class Voxel;
@@ -13,6 +18,7 @@ namespace Rendering
 	{
 	public:
 		Voxel* voxels;
+		Lighting::LightMap* lightMap;
 
 		Chunk(int x, int y, int z);
 		~Chunk();

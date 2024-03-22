@@ -17,8 +17,11 @@ namespace Rendering
 		Chunks(int w, int h, int d);
 		~Chunks();
 
+		Chunk* getChunkByVoxel(int x, int y, int z);
 		Chunk* getChunk(int x, int y, int z);
 		Voxel* get(int x, int y, int z);
+		unsigned char getLight(int x, int y, int z, int channel);
+
 		void set(int x, int y, int z, int id);
 		Voxel* rayCast(glm::vec3 start, glm::vec3 dir, float maxLength, glm::vec3& end, glm::vec3& norm, glm::vec3& iend);
 

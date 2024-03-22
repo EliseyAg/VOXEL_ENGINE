@@ -22,14 +22,14 @@ namespace Rendering
 
         if (is_Triangles)
         {
-            BufferLayout buffer_layout_vec3_vec2_float
+            BufferLayout buffer_layout_vec3_vec2_vec4
             {
                 ShaderDataType::Float3,
                 ShaderDataType::Float2,
-                ShaderDataType::Float
+                ShaderDataType::Float4
             };
 
-            m_buffer = std::make_shared<VertexBuffer>(vertices, 6 * vert * sizeof(float), buffer_layout_vec3_vec2_float);
+            m_buffer = std::make_shared<VertexBuffer>(vertices, 10 * vert * sizeof(float), buffer_layout_vec3_vec2_vec4);
         }
         else
         {

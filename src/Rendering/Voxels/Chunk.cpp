@@ -1,5 +1,6 @@
 #include "Chunk.hpp"
 #include "Voxel.hpp"
+#include "../src/Lighting/LightMap.hpp"
 
 #include <math.h>
 #include <glm/glm.hpp>
@@ -9,7 +10,9 @@ namespace Rendering
 {
 	Chunk::Chunk(int xpos, int ypos, int zpos) : m_x(xpos), m_y(ypos), m_z(zpos)
 	{
+		lightMap = new Lighting::LightMap();
 		voxels = new Voxel[CHUNK_VOL];
+
 		for (int y = 0; y < CHUNK_H; y++) {
 			for (int x = 0; x < CHUNK_W; x++) {
 				int real_x = x + this->m_x * CHUNK_W;
@@ -35,5 +38,6 @@ namespace Rendering
 	Chunk::~Chunk()
 	{
 		delete[] voxels;
+		delete lightMap;
 	}
 }

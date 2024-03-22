@@ -32,6 +32,8 @@ set(PUBLIC_INCLUDES
 	src/Rendering/Voxels/Chunks.hpp
 	src/Rendering/VoxelRenderer.hpp
 	src/Rendering/LineBatch.hpp
+
+	src/Lighting/LightMap.hpp
 )
 
 set(PUBLIC_SOURCES
@@ -56,6 +58,8 @@ set(PUBLIC_SOURCES
 	src/Rendering/Voxels/Chunks.cpp
 	src/Rendering/VoxelRenderer.cpp
 	src/Rendering/LineBatch.cpp
+	
+	src/Lighting/LightMap.cpp
 )
 
 set(ALL_SOURCES

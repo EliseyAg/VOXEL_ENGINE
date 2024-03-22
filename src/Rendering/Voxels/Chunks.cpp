@@ -1,6 +1,7 @@
 #include "Chunks.hpp"
 #include "Chunk.hpp"
 #include "Voxel.hpp"
+#include "../src/Lighting/LightMap.hpp"
 
 #include <math.h>
 #include <limits.h>
@@ -46,6 +47,34 @@ namespace Rendering
 		int ly = y - cy * CHUNK_H;
 		int lz = z - cz * CHUNK_D;
 		return &chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx];
+	}
+
+	unsigned char Chunks::getLight(int x, int y, int z, int channel) {
+		int cx = x / CHUNK_W;
+		int cy = y / CHUNK_H;
+		int cz = z / CHUNK_D;
+		if (x < 0) cx--;
+		if (y < 0) cy--;
+		if (z < 0) cz--;
+		if (cx < 0 || cy < 0 || cz < 0 || cx >= m_w || cy >= m_h || cz >= m_d)
+			return 0;
+		Chunk* chunk = chunks[(cy * m_d + cz) * m_w + cx];
+		int lx = x - cx * CHUNK_W;
+		int ly = y - cy * CHUNK_H;
+		int lz = z - cz * CHUNK_D;
+		return chunk->lightMap->get(lx, ly, lz, channel);
+	}
+
+	Chunk* Chunks::getChunkByVoxel(int x, int y, int z) {
+		int cx = x / CHUNK_W;
+		int cy = y / CHUNK_H;
+		int cz = z / CHUNK_D;
+		if (x < 0) cx--;
+		if (y < 0) cy--;
+		if (z < 0) cz--;
+		if (cx < 0 || cy < 0 || cz < 0 || cx >= m_w || cy >= m_h || cz >= m_d)
+			return nullptr;
+		return chunks[(cy * m_d + cz) * m_w + cx];
 	}
 
 	Chunk* Chunks::getChunk(int x, int y, int z)
