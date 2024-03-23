@@ -16,6 +16,7 @@ set(PUBLIC_INCLUDES
 	src/Resources/stb_image.hpp
 
 	src/Game/Game.hpp
+	src/Game/World.hpp
 	src/Game/Player.hpp
 
 	src/Rendering/OpenGL/Window.hpp
@@ -44,6 +45,7 @@ set(PUBLIC_SOURCES
 	src/Resources/ResourceManager.cpp
 
 	src/Game/Game.cpp
+	src/Game/World.cpp
 	src/Game/Player.cpp
 
 	src/Rendering/OpenGL/Window.cpp

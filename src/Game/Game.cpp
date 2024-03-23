@@ -1,13 +1,10 @@
 #include "Game.hpp"
 #include "Player.hpp"
+#include "World.hpp";
 #include "../Rendering/OpenGL/ShaderProgram.hpp"
 #include "../Rendering/OpenGL/Renderer.hpp"
 #include "../Rendering/OpenGL/Mesh.hpp"
 #include "../Rendering/OpenGL/Camera.hpp"
-#include "../Rendering/Voxels/Chunk.hpp"
-#include "../Rendering/Voxels/Chunks.hpp"
-#include "../Rendering/Voxels/Voxel.hpp"
-#include "../Rendering/VoxelRenderer.hpp"
 #include "../Rendering/LineBatch.hpp"
 #include "../Resources/ResourceManager.hpp"
 #include "../Events/Input.hpp"
@@ -20,9 +17,7 @@ namespace Game
 {
     bool perspective_camera = true;
 
-    Rendering::Chunks* chunks;
-    Rendering::Mesh** meshes;
-    Rendering::VoxelRenderer renderer(1024 * 1024 * 8);
+    World world(8, 8, 1);
     Rendering::LineBatch* lineBatch = new Rendering::LineBatch(4096);
 
     Player player{ glm::vec3(16.f) };
@@ -49,48 +44,11 @@ namespace Game
 
     void Game::render()
     {
-        Rendering::Chunk* closes[27];
-        for (size_t i = 0; i < chunks->volume; i++) {
-            Rendering::Chunk* chunk = chunks->chunks[i];
-            if (!chunk->modified)
-                continue;
-            chunk->modified = false;
-            if (meshes[i] != nullptr)
-                delete meshes[i];
-
-            for (int i = 0; i < 27; i++)
-                closes[i] = nullptr;
-            for (size_t j = 0; j < chunks->volume; j++) {
-                Rendering::Chunk* other = chunks->chunks[j];
-
-                int ox = other->m_x - chunk->m_x;
-                int oy = other->m_y - chunk->m_y;
-                int oz = other->m_z - chunk->m_z;
-
-                if (abs(ox) > 1 || abs(oy) > 1 || abs(oz) > 1)
-                    continue;
-
-                ox += 1;
-                oy += 1;
-                oz += 1;
-                closes[(oy * 3 + oz) * 3 + ox] = other;
-            }
-            Rendering::Mesh* mesh = renderer.render(chunk, (const Rendering::Chunk**)closes);
-            meshes[i] = mesh;
-        }
-
         player.set_projection_mode(perspective_camera ? Rendering::Camera::ProjectionMode::Perspective : Rendering::Camera::ProjectionMode::Orthograthic);
         pDefaultShaderProgram->bind();
         pDefaultShaderProgram->setMatrix4("projection_view_matrix", player.get_projection_matrix() * player.get_view_matrix());
 
-        glm::mat4 model_matrix(1.0f);
-        for (size_t i = 0; i < chunks->volume; i++) {
-            Rendering::Chunk* chunk = chunks->chunks[i];
-            Rendering::Mesh* mesh = meshes[i];
-            model_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(chunk->m_x * CHUNK_W + 0.5f, chunk->m_y * CHUNK_H + 0.5f, chunk->m_z * CHUNK_D + 0.5f));
-            pDefaultShaderProgram->setMatrix4("model_matrix", model_matrix);
-            mesh->render();
-        }
+        world.render(pDefaultShaderProgram);
 
         pLinesShaderProgram->bind();
         pLinesShaderProgram->setMatrix4("projview", player.get_projection_matrix() * player.get_view_matrix());
@@ -113,18 +71,18 @@ namespace Game
         }
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_F3))
         {
-            unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
-            chunks->write(buffer);
-            Resources::ResourceManager::writeBinaryFile("res/worlds/world.bin", (const char*)buffer, chunks->volume * CHUNK_VOL);
+            unsigned char* buffer = new unsigned char[world.getChunksVolume() * CHUNK_VOL];
+            //chunks->write(buffer);
+            Resources::ResourceManager::writeBinaryFile("res/worlds/world.bin", (const char*)buffer, world.getChunksVolume() * CHUNK_VOL);
 
             delete[] buffer;
         }
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_F4))
         {
-            unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
-            Resources::ResourceManager::readBinaryFile("res/worlds/world.bin", (char*)buffer, chunks->volume * CHUNK_VOL);
-            chunks->read(buffer);
-            Lighting::Lighting::init(chunks);
+            unsigned char* buffer = new unsigned char[world.getChunksVolume() * CHUNK_VOL];
+            Resources::ResourceManager::readBinaryFile("res/worlds/world.bin", (char*)buffer, world.getChunksVolume() * CHUNK_VOL);
+            //chunks->read(buffer);
+            Lighting::Lighting::init(world.getChunks());
 
             delete[] buffer;
         }
@@ -138,7 +96,7 @@ namespace Game
             glm::vec3 end;
             glm::vec3 norm;
             glm::vec3 iend;
-            Rendering::Voxel* vox = chunks->rayCast(player.get_position(), player.get_direction(), 10.0f, end, norm, iend);
+            Rendering::Voxel* vox = world.rayCast(player.get_position(), player.get_direction(), 10.0f, end, norm, iend);
             if (vox != nullptr)
             {
                 lineBatch->box(iend.x + 0.5f, iend.y + 0.5f, iend.z + 0.5f, 1.005f, 1.005f, 1.005f, 0, 0, 0, 0.5f);
@@ -146,15 +104,15 @@ namespace Game
                     int x = (int)iend.x;
                     int y = (int)iend.y;
                     int z = (int)iend.z;
-                    chunks->set(x, y, z, 0);
-                    Lighting::Lighting::del(chunks, x, y, z);
+                    world.set(x, y, z, 0);
+                    Lighting::Lighting::del(world.getChunks(), x, y, z);
                 }
                 else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
                     int x = (int)(iend.x) + (int)(norm.x);
                     int y = (int)(iend.y) + (int)(norm.y);
                     int z = (int)(iend.z) + (int)(norm.z);
-                    chunks->set(x, y, z, player.get_current());
-                    Lighting::Lighting::add(chunks, x, y, z, player.get_current() == 5);
+                    world.set(x, y, z, player.get_current());
+                    Lighting::Lighting::add(world.getChunks(), x, y, z, player.get_current() == 5);
                 }
             }
             player.add_rotation(rotation_delta);
@@ -167,12 +125,7 @@ namespace Game
 
     bool Game::init()
     {
-        chunks = new Rendering::Chunks(8, 8, 1);
-        meshes = new Rendering::Mesh * [chunks->volume];
-        for (size_t i = 0; i < chunks->volume; i++)
-            meshes[i] = nullptr;
-
-        Lighting::Lighting::init(chunks);
+        Lighting::Lighting::init(world.getChunks());
 
         player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
         pDefaultShaderProgram = Resources::ResourceManager::getShaderProgram("DefaultShaderProgram");
