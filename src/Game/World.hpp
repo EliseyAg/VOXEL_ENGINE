@@ -2,6 +2,7 @@
 #include "../Rendering/Voxels/Chunks.hpp"
 #include <glm/vec3.hpp>
 #include <memory>
+#include <string>
 
 namespace Rendering
 {
@@ -18,6 +19,9 @@ namespace Game
 	public:
 		World(int x, int y, int z);
 		~World();
+
+		void load(std::string path);
+		void save(std::string path);
 
 		void render(std::shared_ptr<Rendering::ShaderProgram> program);
 

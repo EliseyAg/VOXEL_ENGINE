@@ -3,7 +3,6 @@
 #include "World.hpp";
 #include "../Rendering/OpenGL/ShaderProgram.hpp"
 #include "../Rendering/OpenGL/Renderer.hpp"
-#include "../Rendering/OpenGL/Mesh.hpp"
 #include "../Rendering/OpenGL/Camera.hpp"
 #include "../Rendering/LineBatch.hpp"
 #include "../Resources/ResourceManager.hpp"
@@ -71,20 +70,12 @@ namespace Game
         }
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_F3))
         {
-            unsigned char* buffer = new unsigned char[world.getChunksVolume() * CHUNK_VOL];
-            //chunks->write(buffer);
-            Resources::ResourceManager::writeBinaryFile("res/worlds/world.bin", (const char*)buffer, world.getChunksVolume() * CHUNK_VOL);
-
-            delete[] buffer;
+            world.save("res/worlds/world.bin");
         }
         if (Events::Input::IsKeyJustPressed(Events::KeyCode::KEY_F4))
         {
-            unsigned char* buffer = new unsigned char[world.getChunksVolume() * CHUNK_VOL];
-            Resources::ResourceManager::readBinaryFile("res/worlds/world.bin", (char*)buffer, world.getChunksVolume() * CHUNK_VOL);
-            //chunks->read(buffer);
+            world.load("res/worlds/world.bin");
             Lighting::Lighting::init(world.getChunks());
-
-            delete[] buffer;
         }
 
         switch (m_eCurrentGameState)

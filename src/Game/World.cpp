@@ -5,6 +5,7 @@
 #include "../Rendering/OpenGL/Mesh.hpp"
 #include "../Rendering/OpenGL/ShaderProgram.hpp"
 #include "../Rendering/VoxelRenderer.hpp"
+#include "../Resources/ResourceManager.hpp"
 
 #include <glm/mat4x4.hpp>
 
@@ -25,6 +26,24 @@ namespace Game
 		delete chunks;
 		delete renderer;
 	}
+
+    void World::load(std::string path)
+    {
+        unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
+        Resources::ResourceManager::readBinaryFile(path, (char*)buffer, chunks->volume * CHUNK_VOL);
+        chunks->read(buffer);
+
+        delete[] buffer;
+    }
+
+    void World::save(std::string path)
+    {
+        unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
+        chunks->write(buffer);
+        Resources::ResourceManager::writeBinaryFile(path, (const char*)buffer, chunks->volume * CHUNK_VOL);
+
+        delete[] buffer;
+    }
 
 	void World::render(std::shared_ptr<Rendering::ShaderProgram> program)
 	{
