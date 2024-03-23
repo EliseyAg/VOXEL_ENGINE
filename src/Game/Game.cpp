@@ -155,6 +155,11 @@ namespace Game
         block = new Rendering::Block(9, "Wood_Planks", "Wood_Planks", "Wood_Planks");
         Rendering::Block::blocks[block->id] = block;
 
+        block = new Rendering::Block(10, "Glass", "Glass", "Glass");
+        block->drawGroup = 3;
+        block->lightPassing = true;
+        Rendering::Block::blocks[block->id] = block;
+
         Lighting::Lighting::init(world.getChunks());
 
         player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
