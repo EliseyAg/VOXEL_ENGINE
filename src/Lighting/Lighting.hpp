@@ -13,7 +13,7 @@ namespace Lighting
 	{
 	public:
 		static void init(Rendering::Chunks* chunks);
-		static void add(Rendering::Chunks* chunks, int x, int y, int z, bool isl);
+		static void add(Rendering::Chunks* chunks, int x, int y, int z, unsigned int id);
 		static void del(Rendering::Chunks* chunks, int x, int y, int z);
 	private:
 		static LightSolver* solverR;

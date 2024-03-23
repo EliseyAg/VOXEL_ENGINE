@@ -1,5 +1,6 @@
 #include "Lighting.hpp"
 #include "../Rendering/Voxels/Voxel.hpp"
+#include "../Rendering/Voxels/Block.hpp"
 #include "../Rendering/Voxels/Chunks.hpp"
 
 namespace Lighting
@@ -33,7 +34,8 @@ namespace Lighting
             for (int x = 0; x < chunks->m_w * CHUNK_W; x++) {
                 for (int y = chunks->m_h * CHUNK_H - 1; y >= 0; y--) {
                     Rendering::Voxel* vox = chunks->get(x, y, z);
-                    if (vox->id != 5) {
+                    Rendering::Block* block = Rendering::Block::blocks[vox->id];
+                    if (block->emission[0] || block->emission[1] || block->emission[2]) {
                         break;
                     }
                     chunks->getChunkByVoxel(x, y, z)->lightMap->setS(x % CHUNK_W, y % CHUNK_H, z % CHUNK_D, 0xF);
@@ -69,8 +71,9 @@ namespace Lighting
         solverS->solve();
 	}
 
-    void Lighting::add(Rendering::Chunks* chunks, int x, int y, int z, bool isl)
+    void Lighting::add(Rendering::Chunks* chunks, int x, int y, int z, unsigned int id)
     {
+        Rendering::Block* block = Rendering::Block::blocks[id];
         solverR->remove(x, y, z);
         solverG->remove(x, y, z);
         solverB->remove(x, y, z);
@@ -86,11 +89,11 @@ namespace Lighting
         solverG->solve();
         solverB->solve();
         solverS->solve();
-        if (isl)
+        if (block->emission[0] || block->emission[1] || block->emission[2])
         {
-            solverR->add(x, y, z, 10);
-            solverG->add(x, y, z, 10);
-            solverB->add(x, y, z, 6);
+            solverR->add(x, y, z, block->emission[0]);
+            solverG->add(x, y, z, block->emission[1]);
+            solverB->add(x, y, z, block->emission[2]);
             solverR->solve();
             solverG->solve();
             solverB->solve();

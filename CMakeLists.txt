@@ -28,6 +28,7 @@ set(PUBLIC_INCLUDES
 	src/Rendering/OpenGL/Renderer.hpp
 	src/Rendering/OpenGL/Camera.hpp
 	src/Rendering/OpenGL/Mesh.hpp
+	src/Rendering/Voxels/Block.hpp
 	src/Rendering/Voxels/Voxel.hpp
 	src/Rendering/Voxels/Chunk.hpp
 	src/Rendering/Voxels/Chunks.hpp
@@ -57,6 +58,7 @@ set(PUBLIC_SOURCES
 	src/Rendering/OpenGL/Renderer.cpp
 	src/Rendering/OpenGL/Camera.cpp
 	src/Rendering/OpenGL/Mesh.cpp
+	src/Rendering/Voxels/Block.cpp
 	src/Rendering/Voxels/Voxel.cpp
 	src/Rendering/Voxels/Chunk.cpp
 	src/Rendering/Voxels/Chunks.cpp

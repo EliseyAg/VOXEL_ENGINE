@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include "Player.hpp"
 #include "World.hpp";
+#include "../Rendering/Voxels/Block.hpp"
 #include "../Rendering/OpenGL/ShaderProgram.hpp"
 #include "../Rendering/OpenGL/Renderer.hpp"
 #include "../Rendering/OpenGL/Camera.hpp"
@@ -103,7 +104,7 @@ namespace Game
                     int y = (int)(iend.y) + (int)(norm.y);
                     int z = (int)(iend.z) + (int)(norm.z);
                     world.set(x, y, z, player.get_current());
-                    Lighting::Lighting::add(world.getChunks(), x, y, z, player.get_current() == 5);
+                    Lighting::Lighting::add(world.getChunks(), x, y, z, player.get_current());
                 }
             }
             player.add_rotation(rotation_delta);
@@ -116,6 +117,40 @@ namespace Game
 
     bool Game::init()
     {
+        //Blocks
+        Rendering::Block* block = new Rendering::Block(0, "Air", "Air", "Air");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(1, "GrassTop", "GrassLeft", "Dirt");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(2, "Dirt", "Dirt", "Dirt");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(3, "Coblestone", "Coblestone", "Coblestone");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(4, "WoodTop", "WoodLeft", "WoodTop");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(5, "Light", "Light", "Light");
+        block->emission[0] = 10;
+        block->emission[1] = 10;
+        block->emission[2] = 0;
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(6, "Green", "Green", "Green");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(7, "Unknown", "Unknown", "Unknown");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(8, "BirchTop", "BirchLeft", "BirchTop");
+        Rendering::Block::blocks[block->id] = block;
+
+        block = new Rendering::Block(9, "Wood_Planks", "Wood_Planks", "Wood_Planks");
+        Rendering::Block::blocks[block->id] = block;
+
         Lighting::Lighting::init(world.getChunks());
 
         player.set_viewport_size(static_cast<float>(m_windowSize.x), static_cast<float>(m_windowSize.y));
