@@ -16,7 +16,7 @@
 
 #define LIGHT(X,Y,Z, CHANNEL) (IS_CHUNK(X,Y,Z) ? GET_CHUNK(X,Y,Z)->lightMap->get(LOCAL(X, CHUNK_W), LOCAL(Y, CHUNK_H), LOCAL(Z, CHUNK_D), (CHANNEL)) : 0)
 #define VOXEL(X,Y,Z) (GET_CHUNK(X,Y,Z)->voxels[(LOCAL(Y, CHUNK_H) * CHUNK_D + LOCAL(Z, CHUNK_D)) * CHUNK_W + LOCAL(X, CHUNK_W)])
-#define IS_BLOCKED(X,Y,Z) ((!IS_CHUNK(X, Y, Z)) || (!VOXEL(X, Y, Z).isTransparent))
+#define IS_BLOCKED(X,Y,Z, GROUP) ((!IS_CHUNK(X, Y, Z)) || Block::blocks[VOXEL(X, Y, Z).id]->drawGroup == (GROUP))
 
 #define VERTEX(INDEX, X,Y,Z, U,V, R,G,B,S) buffer[INDEX+0] = (X);\
 										buffer[INDEX+1] = (Y);\
@@ -56,6 +56,8 @@ namespace Rendering
 					float l;
 					float u1, u2, v1, v2;
 
+					unsigned char group = Block::blocks[id]->drawGroup;
+
 					auto pTexture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
 					auto subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[1]);
 					u1 = subTexture.leftBottomUV.x;
@@ -63,7 +65,7 @@ namespace Rendering
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
 
-					if (!IS_BLOCKED(x, y + 1, z))
+					if (!IS_BLOCKED(x, y + 1, z, group))
 					{
 						float lr = LIGHT(x, y + 1, z, 0) / 15.0f;
 						float lg = LIGHT(x, y + 1, z, 1) / 15.0f;
@@ -105,7 +107,7 @@ namespace Rendering
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
 
-					if (!IS_BLOCKED(x, y - 1, z))
+					if (!IS_BLOCKED(x, y - 1, z, group))
 					{
 						float lr = LIGHT(x, y - 1, z, 0) / 15.0f;
 						float lg = LIGHT(x, y - 1, z, 1) / 15.0f;
@@ -147,7 +149,7 @@ namespace Rendering
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
 
-					if (!IS_BLOCKED(x + 1, y, z))
+					if (!IS_BLOCKED(x + 1, y, z, group))
 					{
 						float lr = LIGHT(x + 1, y, z, 0) / 15.0f;
 						float lg = LIGHT(x + 1, y, z, 1) / 15.0f;
@@ -189,7 +191,7 @@ namespace Rendering
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
 
-					if (!IS_BLOCKED(x - 1, y, z))
+					if (!IS_BLOCKED(x - 1, y, z, group))
 					{
 						float lr = LIGHT(x - 1, y, z, 0) / 15.0f;
 						float lg = LIGHT(x - 1, y, z, 1) / 15.0f;
@@ -231,7 +233,7 @@ namespace Rendering
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
 
-					if (!IS_BLOCKED(x, y, z + 1))
+					if (!IS_BLOCKED(x, y, z + 1, group))
 					{
 						float lr = LIGHT(x, y, z + 1, 0) / 15.0f;
 						float lg = LIGHT(x, y, z + 1, 1) / 15.0f;
@@ -273,7 +275,7 @@ namespace Rendering
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
 
-					if (!IS_BLOCKED(x, y, z - 1))
+					if (!IS_BLOCKED(x, y, z - 1, group))
 					{
 						float lr = LIGHT(x, y, z - 1, 0) / 15.0f;
 						float lg = LIGHT(x, y, z - 1, 1) / 15.0f;

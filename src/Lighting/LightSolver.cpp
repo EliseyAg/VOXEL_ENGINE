@@ -3,6 +3,7 @@
 #include "../Rendering/Voxels/Chunks.hpp"
 #include "../Rendering/Voxels/Chunk.hpp"
 #include "../Rendering/Voxels/Voxel.hpp"
+#include "../Rendering/Voxels/Block.hpp"
 
 namespace Lighting
 {
@@ -112,7 +113,8 @@ namespace Lighting
 				if (chunk) {
 					int light = chunks->getLight(x, y, z, channel);
 					Rendering::Voxel* v = chunks->get(x, y, z);
-					if (v->id == 0 && light + 2 <= entry.light) {
+					Rendering::Block* block = Rendering::Block::blocks[v->id];
+					if (block->lightPassing && light + 2 <= entry.light) {
 						chunk->lightMap->set(x - chunk->m_x * CHUNK_W, y - chunk->m_y * CHUNK_H, z - chunk->m_z * CHUNK_D, channel, entry.light - 1);
 						chunk->modified = true;
 						lightentry nentry;

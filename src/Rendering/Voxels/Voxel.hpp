@@ -9,7 +9,5 @@ namespace Rendering
 	{
 	public:
 		uint8_t id;
-		bool isTransparent;
-		std::string name;
 	};
 }

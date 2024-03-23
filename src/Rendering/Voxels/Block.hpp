@@ -13,5 +13,7 @@ namespace Rendering
 		const unsigned int id;
 		std::string textureFaces[6];
 		unsigned char emission[3];
+		unsigned char drawGroup;
+		bool lightPassing = false;
 	};
 }

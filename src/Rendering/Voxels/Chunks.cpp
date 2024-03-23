@@ -99,10 +99,6 @@ namespace Rendering
 		int ly = y - cy * CHUNK_H;
 		int lz = z - cz * CHUNK_D;
 		chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx].id = id;
-		if (id == 0 || id == 6)
-			chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx].isTransparent = true;
-		else
-			chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx].isTransparent = false;
 		chunk->modified = true;
 
 		if (lx == 0 && (chunk = getChunk(cx - 1, cy, cz))) chunk->modified = true;
@@ -228,10 +224,6 @@ namespace Rendering
 			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
 			{
 				chunk->voxels[j].id = source[index];
-				if (chunk->voxels[j].id == 0 || chunk->voxels[j].id == 6)
-					chunk->voxels[j].isTransparent = true;
-				else
-					chunk->voxels[j].isTransparent = false;
 			}
 			chunk->modified = true;
 		}

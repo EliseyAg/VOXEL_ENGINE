@@ -33,7 +33,7 @@ namespace Game
 
     Game::~Game()
     {
-
+        Lighting::Lighting::terminate();
     }
 
     void Game::update_winsize(glm::ivec2& windowSize)
@@ -119,6 +119,8 @@ namespace Game
     {
         //Blocks
         Rendering::Block* block = new Rendering::Block(0, "Air", "Air", "Air");
+        block->drawGroup = 1;
+        block->lightPassing = true;
         Rendering::Block::blocks[block->id] = block;
 
         block = new Rendering::Block(1, "GrassTop", "GrassLeft", "Dirt");
@@ -140,6 +142,8 @@ namespace Game
         Rendering::Block::blocks[block->id] = block;
 
         block = new Rendering::Block(6, "Green", "Green", "Green");
+        block->drawGroup = 2;
+        block->lightPassing = true;
         Rendering::Block::blocks[block->id] = block;
 
         block = new Rendering::Block(7, "Unknown", "Unknown", "Unknown");
