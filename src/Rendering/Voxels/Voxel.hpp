@@ -5,8 +5,6 @@
 
 namespace Rendering
 {
-	extern std::vector<std::pair<uint8_t, std::vector<std::string>>> id_subtextures;
-
 	class Voxel
 	{
 	public:

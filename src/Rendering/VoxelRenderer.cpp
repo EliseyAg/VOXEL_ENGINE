@@ -1,5 +1,6 @@
 #include "VoxelRenderer.hpp"
 #include "Voxels/Voxel.hpp"
+#include "Voxels/Block.hpp"
 #include "Voxels/Chunk.hpp"
 #include "OpenGL/Mesh.hpp"
 #include "../Resources/ResourceManager.hpp"
@@ -18,15 +19,15 @@
 #define IS_BLOCKED(X,Y,Z) ((!IS_CHUNK(X, Y, Z)) || (!VOXEL(X, Y, Z).isTransparent))
 
 #define VERTEX(INDEX, X,Y,Z, U,V, R,G,B,S) buffer[INDEX+0] = (X);\
-									buffer[INDEX+1] = (Y);\
-									buffer[INDEX+2] = (Z);\
-									buffer[INDEX+3] = (U);\
-									buffer[INDEX+4] = (V);\
-									buffer[INDEX+5] = (R);\
-									buffer[INDEX+6] = (G);\
-									buffer[INDEX+7] = (B);\
-									buffer[INDEX+8] = (S);\
-									INDEX += VERTEX_SIZE;
+										buffer[INDEX+1] = (Y);\
+										buffer[INDEX+2] = (Z);\
+										buffer[INDEX+3] = (U);\
+										buffer[INDEX+4] = (V);\
+										buffer[INDEX+5] = (R);\
+										buffer[INDEX+6] = (G);\
+										buffer[INDEX+7] = (B);\
+										buffer[INDEX+8] = (S);\
+										INDEX += VERTEX_SIZE;
 
 namespace Rendering
 {
@@ -56,7 +57,7 @@ namespace Rendering
 					float u1, u2, v1, v2;
 
 					auto pTexture = Resources::ResourceManager::getTexture("DefaultTextureAtlas");
-					auto subTexture = pTexture->getSubTexture(id_subtextures[id].second[1]);
+					auto subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[1]);
 					u1 = subTexture.leftBottomUV.x;
 					u2 = subTexture.rightTopUV.x;
 					v1 = subTexture.leftBottomUV.y;
@@ -98,6 +99,12 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y + 0.5f, z - 0.5f, u1, v1, lr3, lg3, lb3, ls3);
 					}
 
+					subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[3]);
+					u1 = subTexture.leftBottomUV.x;
+					u2 = subTexture.rightTopUV.x;
+					v1 = subTexture.leftBottomUV.y;
+					v2 = subTexture.rightTopUV.y;
+
 					if (!IS_BLOCKED(x, y - 1, z))
 					{
 						float lr = LIGHT(x, y - 1, z, 0) / 15.0f;
@@ -133,6 +140,12 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y - 0.5f, z - 0.5f, u2, v1, lr3, lg3, lb3, ls3);
 						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u2, v2, lr1, lg1, lb1, ls1);
 					}
+
+					subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[2]);
+					u1 = subTexture.leftBottomUV.x;
+					u2 = subTexture.rightTopUV.x;
+					v1 = subTexture.leftBottomUV.y;
+					v2 = subTexture.rightTopUV.y;
 
 					if (!IS_BLOCKED(x + 1, y, z))
 					{
@@ -170,6 +183,12 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y - 0.5f, z + 0.5f, u1, v2, lr3, lg3, lb3, ls3);
 					}
 
+					subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[4]);
+					u1 = subTexture.leftBottomUV.x;
+					u2 = subTexture.rightTopUV.x;
+					v1 = subTexture.leftBottomUV.y;
+					v2 = subTexture.rightTopUV.y;
+
 					if (!IS_BLOCKED(x - 1, y, z))
 					{
 						float lr = LIGHT(x - 1, y, z, 0) / 15.0f;
@@ -206,11 +225,12 @@ namespace Rendering
 						VERTEX(index, x - 0.5f, y + 0.5f, z + 0.5f, u2, v2, lr1, lg1, lb1, ls1);
 					}
 
-					subTexture = pTexture->getSubTexture(id_subtextures[id].second[0]);
+					subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[0]);
 					u1 = subTexture.leftBottomUV.x;
 					u2 = subTexture.rightTopUV.x;
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
+
 					if (!IS_BLOCKED(x, y, z + 1))
 					{
 						float lr = LIGHT(x, y, z + 1, 0) / 15.0f;
@@ -247,11 +267,12 @@ namespace Rendering
 						VERTEX(index, x + 0.5f, y + 0.5f, z + 0.5f, u2, v2, lr1, lg1, lb1, ls1);
 					}
 
-					subTexture = pTexture->getSubTexture(id_subtextures[id].second[2]);
+					subTexture = pTexture->getSubTexture(Block::blocks[id]->textureFaces[5]);
 					u1 = subTexture.leftBottomUV.x;
 					u2 = subTexture.rightTopUV.x;
 					v1 = subTexture.leftBottomUV.y;
 					v2 = subTexture.rightTopUV.y;
+
 					if (!IS_BLOCKED(x, y, z - 1))
 					{
 						float lr = LIGHT(x, y, z - 1, 0) / 15.0f;
