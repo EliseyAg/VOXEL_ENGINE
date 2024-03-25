@@ -8,7 +8,7 @@
 
 namespace Rendering
 {
-	Chunks::Chunks(int w, int h, int d) : m_w(w), m_h(h), m_d(d)
+	Chunks::Chunks(int w, int h, int d, int ox, int oy, int oz) : m_w(w), m_h(h), m_d(d), ox(ox), oy(oy), oz(oz)
 	{
 		volume = w * h * d;
 		chunks = new Chunk * [volume];
@@ -30,6 +30,20 @@ namespace Rendering
 			delete chunks[i];
 		}
 		delete[] chunks;
+	}
+
+	void Chunks::setCenter(int x, int y, int z)
+	{
+		ox = x;
+		oy = y;
+		oz = z;
+	}
+
+	void Chunks::translate(int x, int y, int z)
+	{
+		ox += x;
+		oy += y;
+		oz += z;
 	}
 
 	Voxel* Chunks::get(int x, int y, int z)

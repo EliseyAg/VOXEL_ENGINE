@@ -11,10 +11,10 @@
 
 namespace Game
 {
-	World::World(int x, int y, int z)
+	World::World(int x, int y, int z, int ox, int oy, int oz)
 	{
 		renderer = new Rendering::VoxelRenderer(1024 * 1024 * 8);
-		chunks = new Rendering::Chunks(x, y, z);
+		chunks = new Rendering::Chunks(x, y, z, ox, oy, oz);
 		meshes = new Rendering::Mesh * [chunks->volume];
 		for (size_t i = 0; i < chunks->volume; i++)
 			meshes[i] = nullptr;
@@ -26,6 +26,16 @@ namespace Game
 		delete chunks;
 		delete renderer;
 	}
+
+    void World::setCenter(int x, int y, int z)
+    {
+        chunks->setCenter(x, y, z);
+    }
+
+    void World::translate(int x, int y, int z)
+    {
+        chunks->translate(x, y, z);
+    }
 
     void World::load(std::string path)
     {
