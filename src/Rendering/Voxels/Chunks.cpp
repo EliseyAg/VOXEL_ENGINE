@@ -1,6 +1,8 @@
 #include "Chunks.hpp"
 #include "Chunk.hpp"
 #include "Voxel.hpp"
+#include "../VoxelRenderer.hpp"
+#include "../OpenGL/Mesh.hpp"
 #include "../src/Lighting/LightMap.hpp"
 
 #include <math.h>
@@ -12,15 +14,14 @@ namespace Rendering
 	{
 		volume = w * h * d;
 		chunks = new Chunk * [volume];
+		chunksSecond = new Chunk * [volume];
 
-		int index = 0;
-		for (int y = 0; y < m_h; y++) {
-			for (int z = 0; z < m_d; z++) {
-				for (int x = 0; x < m_w; x++, index++) {
-					Chunk* chunk = new Chunk(x, y, z);
-					chunks[index] = chunk;
-				}
-			}
+		meshes = new Mesh * [volume];
+		meshesSecond = new Mesh * [volume];
+
+		for (size_t i = 0; i < volume; i++) {
+			chunks[i] = nullptr;
+			meshes[i] = nullptr;
 		}
 	}
 
@@ -34,20 +35,138 @@ namespace Rendering
 
 	void Chunks::setCenter(int x, int y, int z)
 	{
-		ox = x;
-		oy = y;
-		oz = z;
+		int cx = x / CHUNK_W;
+		int cy = y / CHUNK_H;
+		int cz = z / CHUNK_D;
+		cx -= ox;
+		cy -= oy;
+		cz -= oz;
+		if (x < 0) cx--;
+		if (y < 0) cy--;
+		if (z < 0) cz--;
+		cx -= m_w / 2;
+		cy -= m_h / 2;
+		cz -= m_d / 2;
+		if (cx != 0 || cy != 0 || cz != 0)
+			translate(cx, cy, cz);
 	}
 
-	void Chunks::translate(int x, int y, int z)
+	void Chunks::translate(int dx, int dy, int dz)
 	{
-		ox += x;
-		oy += y;
-		oz += z;
+		for (unsigned int i = 0; i < volume; i++) {
+			chunksSecond[i] = nullptr;
+			meshesSecond[i] = nullptr;
+		}
+		for (unsigned int y = 0; y < m_h; y++) {
+			for (unsigned int z = 0; z < m_d; z++) {
+				for (unsigned int x = 0; x < m_w; x++) {
+					Chunk* chunk = chunks[(y * m_d + z) * m_w + x];
+					int nx = x - dx;
+					int ny = y - dy;
+					int nz = z - dz;
+					if (chunk == nullptr)
+						continue;
+					Mesh* mesh = meshes[(y * m_d + z) * m_w + x];
+					if (nx < 0 || ny < 0 || nz < 0 || nx >= m_w || ny >= m_h || nz >= m_d) {
+						delete chunk;
+						delete mesh;
+						continue;
+					}
+					meshesSecond[(ny * m_d + nz) * m_w + nx] = mesh;
+					chunksSecond[(ny * m_d + nz) * m_w + nx] = chunk;
+				}
+			}
+		}
+		Chunk** ctemp = chunks;
+		chunks = chunksSecond;
+		chunksSecond = ctemp;
+
+		Mesh** mtemp = meshes;
+		meshes = meshesSecond;
+		meshesSecond = mtemp;
+
+		ox += dx;
+		oy += dy;
+		oz += dz;
+	}
+
+	bool Chunks::buildMeshes(VoxelRenderer* renderer)
+	{
+		int nearX = 0;
+		int nearY = 0;
+		int nearZ = 0;
+		int minDistance = 1000000000;
+		for (unsigned int y = 0; y < m_h; y++) {
+			for (unsigned int z = 1; z < m_d - 1; z++) {
+				for (unsigned int x = 1; x < m_w - 1; x++) {
+					int index = (y * m_d + z) * m_w + x;
+					Chunk* chunk = chunks[index];
+					if (chunk == nullptr)
+						continue;
+					Mesh* mesh = meshes[index];
+					if (mesh != nullptr && !chunk->modified)
+						continue;
+					int lx = x - m_w / 2;
+					int ly = y - m_h / 2;
+					int lz = z - m_d / 2;
+					int distance = (lx * lx + ly * ly + lz * lz);
+					if (distance < minDistance) {
+						minDistance = distance;
+						nearX = x;
+						nearY = y;
+						nearZ = z;
+					}
+				}
+			}
+		}
+
+		int index = (nearY * m_d + nearZ) * m_w + nearX;
+
+		Chunk* closes[27];
+
+		Chunk* chunk = chunks[index];
+		if (chunk == nullptr)
+			return false;
+		Mesh* mesh = meshes[index];
+		if (mesh == nullptr || chunk->modified) {
+			if (mesh != nullptr)
+				delete mesh;
+			if (chunk->isEmpty()) {
+				meshes[index] = nullptr;
+				return false;
+			}
+			chunk->modified = false;
+			for (int i = 0; i < 27; i++)
+				closes[i] = nullptr;
+			for (size_t j = 0; j < volume; j++) {
+				Chunk* other = chunks[j];
+				if (other == nullptr)
+					continue;
+
+				int ox = other->m_x - chunk->m_x;
+				int oy = other->m_y - chunk->m_y;
+				int oz = other->m_z - chunk->m_z;
+
+				if (abs(ox) > 1 || abs(oy) > 1 || abs(oz) > 1)
+					continue;
+
+				ox += 1;
+				oy += 1;
+				oz += 1;
+				closes[(oy * 3 + oz) * 3 + ox] = other;
+			}
+			mesh = renderer->render(chunk, (const Chunk**)closes);
+			meshes[index] = mesh;
+			return true;
+		}
+		return false;
 	}
 
 	Voxel* Chunks::get(int x, int y, int z)
 	{
+		x -= ox * CHUNK_W;
+		y -= oy * CHUNK_H;
+		z -= oz * CHUNK_D;
 		int cx = x / CHUNK_W;
 		int cy = y / CHUNK_H;
 		int cz = z / CHUNK_D;
@@ -57,13 +176,19 @@ namespace Rendering
 		if (cx < 0 || cy < 0 || cz < 0 || cx >= m_w || cy >= m_h || cz >= m_d)
 			return nullptr;
 		Chunk* chunk = chunks[(cy * m_d + cz) * m_w + cx];
+		if (chunk == nullptr)
+			return nullptr;
 		int lx = x - cx * CHUNK_W;
 		int ly = y - cy * CHUNK_H;
 		int lz = z - cz * CHUNK_D;
 		return &chunk->voxels[(ly * CHUNK_D + lz) * CHUNK_W + lx];
 	}
 
-	unsigned char Chunks::getLight(int x, int y, int z, int channel) {
+	unsigned char Chunks::getLight(int x, int y, int z, int channel)
+	{
+		x -= ox * CHUNK_W;
+		y -= oy * CHUNK_H;
+		z -= oz * CHUNK_D;
 		int cx = x / CHUNK_W;
 		int cy = y / CHUNK_H;
 		int cz = z / CHUNK_D;
@@ -73,13 +198,19 @@ namespace Rendering
 		if (cx < 0 || cy < 0 || cz < 0 || cx >= m_w || cy >= m_h || cz >= m_d)
 			return 0;
 		Chunk* chunk = chunks[(cy * m_d + cz) * m_w + cx];
+		if (chunk == nullptr)
+			return 0;
 		int lx = x - cx * CHUNK_W;
 		int ly = y - cy * CHUNK_H;
 		int lz = z - cz * CHUNK_D;
 		return chunk->lightMap->get(lx, ly, lz, channel);
 	}
 
-	Chunk* Chunks::getChunkByVoxel(int x, int y, int z) {
+	Chunk* Chunks::getChunkByVoxel(int x, int y, int z)
+	{
+		x -= ox * CHUNK_W;
+		y -= oy * CHUNK_H;
+		z -= oz * CHUNK_D;
 		int cx = x / CHUNK_W;
 		int cy = y / CHUNK_H;
 		int cz = z / CHUNK_D;
@@ -93,6 +224,9 @@ namespace Rendering
 
 	Chunk* Chunks::getChunk(int x, int y, int z)
 	{
+		x -= ox;
+		y -= oy;
+		z -= oz;
 		if (x < 0 || y < 0 || z < 0 || x >= m_w || y >= m_h || z >= m_d)
 			return nullptr;
 		return chunks[(y * m_d + z) * m_w + x];
@@ -100,6 +234,9 @@ namespace Rendering
 
 	void Chunks::set(int x, int y, int z, int id)
 	{
+		x -= ox * CHUNK_W;
+		y -= oy * CHUNK_H;
+		z -= oz * CHUNK_D;
 		int cx = x / CHUNK_W;
 		int cy = y / CHUNK_H;
 		int cz = z / CHUNK_D;

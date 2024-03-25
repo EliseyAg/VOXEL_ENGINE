@@ -23,6 +23,8 @@ namespace Rendering
 		Chunk(int x, int y, int z);
 		~Chunk();
 
+		bool isEmpty();
+
 		bool modified = true;
 		int m_x, m_y, m_z;
 	};

@@ -36,4 +36,17 @@ namespace Rendering
 		delete[] voxels;
 		delete lightMap;
 	}
+
+	bool Chunk::isEmpty() {
+		int id = -1;
+		for (int i = 0; i < CHUNK_VOL; i++) {
+			if (voxels[i].id != id) {
+				if (id != -1)
+					return false;
+				else
+					id = voxels[i].id;
+			}
+		}
+		return true;
+	}
 }
