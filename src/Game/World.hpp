@@ -33,6 +33,8 @@ namespace Game
 		void setCenter(int x, int y, int z);
 		void translate(int x, int y, int z);
 
+		Rendering::VoxelRenderer* getRenderer() { return renderer; }
+
 	private:
 		Rendering::Chunks* chunks = nullptr;
 		Rendering::Mesh** meshes;

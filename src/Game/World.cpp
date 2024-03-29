@@ -57,40 +57,14 @@ namespace Game
 
 	void World::render(std::shared_ptr<Rendering::ShaderProgram> program)
 	{
-        Rendering::Chunk* closes[27];
-        for (size_t i = 0; i < chunks->volume; i++) {
-            Rendering::Chunk* chunk = chunks->chunks[i];
-            if (!chunk->modified)
-                continue;
-            chunk->modified = false;
-            if (meshes[i] != nullptr)
-                delete meshes[i];
-
-            for (int i = 0; i < 27; i++)
-                closes[i] = nullptr;
-            for (size_t j = 0; j < chunks->volume; j++) {
-                Rendering::Chunk* other = chunks->chunks[j];
-
-                int ox = other->m_x - chunk->m_x;
-                int oy = other->m_y - chunk->m_y;
-                int oz = other->m_z - chunk->m_z;
-
-                if (abs(ox) > 1 || abs(oy) > 1 || abs(oz) > 1)
-                    continue;
-
-                ox += 1;
-                oy += 1;
-                oz += 1;
-                closes[(oy * 3 + oz) * 3 + ox] = other;
-            }
-            Rendering::Mesh* mesh = renderer->render(chunk, (const Rendering::Chunk**)closes);
-            meshes[i] = mesh;
-        }
-
         glm::mat4 model_matrix(1.0f);
         for (size_t i = 0; i < chunks->volume; i++) {
             Rendering::Chunk* chunk = chunks->chunks[i];
-            Rendering::Mesh* mesh = meshes[i];
+            if (chunk == nullptr)
+                continue;
+            Rendering::Mesh* mesh = chunks->meshes[i];
+            if (mesh == nullptr)
+                continue;
             model_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(chunk->m_x * CHUNK_W + 0.5f, chunk->m_y * CHUNK_H + 0.5f, chunk->m_z * CHUNK_D + 0.5f));
             program->setMatrix4("model_matrix", model_matrix);
             mesh->render();

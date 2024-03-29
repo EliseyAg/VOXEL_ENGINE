@@ -14,8 +14,9 @@ namespace Lighting
 	public:
 		static void init(Rendering::Chunks* chunks);
 		static void terminate() { delete solverR; delete solverG; delete solverB; delete solverS; }
-		static void add(Rendering::Chunks* chunks, int x, int y, int z, unsigned int id);
-		static void del(Rendering::Chunks* chunks, int x, int y, int z);
+		static void onBlockSet(int x, int y, int z, int id);
+		static Rendering::Chunks* chunks;
+		static void onChunkLoaded(int cx, int cy, int cz);
 	private:
 		static LightSolver* solverR;
 		static LightSolver* solverG;

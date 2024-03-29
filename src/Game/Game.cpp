@@ -97,14 +97,14 @@ namespace Game
                     int y = (int)iend.y;
                     int z = (int)iend.z;
                     world.set(x, y, z, 0);
-                    Lighting::Lighting::del(world.getChunks(), x, y, z);
+                    Lighting::Lighting::onBlockSet(x, y, z, 0);
                 }
                 else if (Events::Input::IsMouseButtonJustPressed(Events::MouseButton::MOUSE_BUTTON_LEFT)) {
                     int x = (int)(iend.x) + (int)(norm.x);
                     int y = (int)(iend.y) + (int)(norm.y);
                     int z = (int)(iend.z) + (int)(norm.z);
                     world.set(x, y, z, player.get_current());
-                    Lighting::Lighting::add(world.getChunks(), x, y, z, player.get_current());
+                    Lighting::Lighting::onBlockSet(x, y, z, player.get_current());
                 }
             }
             player.add_rotation(rotation_delta);
@@ -113,6 +113,9 @@ namespace Game
             //case EGameState::Pause:
             //    break;
         }
+
+        world.getChunks()->setCenter(player.get_position().x, player.get_position().z, 0);
+        world.getChunks()->buildMeshes(world.getRenderer());
     }
 
     bool Game::init()
