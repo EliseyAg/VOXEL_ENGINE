@@ -35,8 +35,5 @@ namespace Rendering
 		void translate(int dx, int dy, int dz);
 
 		bool buildMeshes(VoxelRenderer* renderer);
-
-		void write(unsigned char* dest);
-		void read(unsigned char* source);
 	};
 }

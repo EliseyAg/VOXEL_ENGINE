@@ -10,7 +10,7 @@
 
 namespace Rendering
 {
-	Chunks::Chunks(int w, int h, int d, int ox, int oy, int oz) : m_w(w), m_h(h), m_d(d), ox(ox), oy(oy), oz(oz)
+	Chunks::Chunks(int w, int d, int h, int ox, int oy, int oz) : m_w(w), m_h(h), m_d(d), ox(ox), oy(oy), oz(oz)
 	{
 		volume = w * h * d;
 		chunks = new Chunk * [volume];
@@ -19,7 +19,9 @@ namespace Rendering
 		meshes = new Mesh * [volume];
 		meshesSecond = new Mesh * [volume];
 
-		for (size_t i = 0; i < volume; i++) {
+		chunks[0] = new Chunk(0, 0, 0);
+		meshes[0] = nullptr;
+		for (size_t i = 1; i < volume; i++) {
 			chunks[i] = nullptr;
 			meshes[i] = nullptr;
 		}
@@ -96,8 +98,8 @@ namespace Rendering
 		int nearY = 0;
 		int nearZ = 0;
 		int minDistance = 1000000000;
-		for (unsigned int y = 0; y < m_h; y++) {
-			for (unsigned int z = 1; z < m_d - 1; z++) {
+		for (unsigned int y = 0; y < m_d; y++) {
+			for (unsigned int z = 1; z < m_h - 1; z++) {
 				for (unsigned int x = 1; x < m_w - 1; x++) {
 					int index = (y * m_d + z) * m_w + x;
 					Chunk* chunk = chunks[index];
@@ -351,32 +353,5 @@ namespace Rendering
 		end.z = pz + t * dz;
 		norm.x = norm.y = norm.z = 0.0f;
 		return nullptr;
-	}
-
-	void Chunks::write(unsigned char* dest)
-	{
-		size_t index = 0;
-		for (size_t i = 0; i < volume; i++)
-		{
-			Chunk* chunk = chunks[i];
-			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
-			{
-				dest[index] = chunk->voxels[j].id;
-			}
-		}
-	}
-
-	void Chunks::read(unsigned char* source)
-	{
-		size_t index = 0;
-		for (size_t i = 0; i < volume; i++)
-		{
-			Chunk* chunk = chunks[i];
-			for (size_t j = 0; j < CHUNK_VOL; j++, index++)
-			{
-				chunk->voxels[j].id = source[index];
-			}
-			chunk->modified = true;
-		}
 	}
 }

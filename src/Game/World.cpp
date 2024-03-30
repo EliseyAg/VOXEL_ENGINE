@@ -15,14 +15,10 @@ namespace Game
 	{
 		renderer = new Rendering::VoxelRenderer(1024 * 1024 * 8);
 		chunks = new Rendering::Chunks(x, y, z, ox, oy, oz);
-		meshes = new Rendering::Mesh * [chunks->volume];
-		for (size_t i = 0; i < chunks->volume; i++)
-			meshes[i] = nullptr;
 	}
 
 	World::~World()
 	{
-		delete[] meshes;
 		delete chunks;
 		delete renderer;
 	}
@@ -41,7 +37,6 @@ namespace Game
     {
         unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
         Resources::ResourceManager::readBinaryFile(path, (char*)buffer, chunks->volume * CHUNK_VOL);
-        chunks->read(buffer);
 
         delete[] buffer;
     }
@@ -49,7 +44,6 @@ namespace Game
     void World::save(std::string path)
     {
         unsigned char* buffer = new unsigned char[chunks->volume * CHUNK_VOL];
-        chunks->write(buffer);
         Resources::ResourceManager::writeBinaryFile(path, (const char*)buffer, chunks->volume * CHUNK_VOL);
 
         delete[] buffer;

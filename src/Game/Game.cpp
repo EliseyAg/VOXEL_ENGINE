@@ -17,7 +17,7 @@ namespace Game
 {
     bool perspective_camera = true;
 
-    World world(8, 8, 1, 0, 0, 0);
+    World world(8, 8, 8, 0, 0, 0);
     Rendering::LineBatch* lineBatch = new Rendering::LineBatch(4096);
 
     Player player{ glm::vec3(16.f) };

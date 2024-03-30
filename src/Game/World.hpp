@@ -6,7 +6,6 @@
 
 namespace Rendering
 {
-	class Mesh;
 	class Voxel;
 	class VoxelRenderer;
 	class ShaderProgram;
@@ -37,7 +36,6 @@ namespace Game
 
 	private:
 		Rendering::Chunks* chunks = nullptr;
-		Rendering::Mesh** meshes;
 		Rendering::VoxelRenderer* renderer;
 	};
 }
