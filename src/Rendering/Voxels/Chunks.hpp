@@ -35,5 +35,6 @@ namespace Rendering
 		void translate(int dx, int dy, int dz);
 
 		bool buildMeshes(VoxelRenderer* renderer);
+		bool loadVisible();
 	};
 }

@@ -2,8 +2,10 @@
 #include "Chunk.hpp"
 #include "Voxel.hpp"
 #include "../VoxelRenderer.hpp"
+#include "../../Game/WorldGenerator.hpp"
 #include "../OpenGL/Mesh.hpp"
 #include "../src/Lighting/LightMap.hpp"
+#include "../src/Lighting/Lighting.hpp"
 
 #include <math.h>
 #include <limits.h>
@@ -19,9 +21,7 @@ namespace Rendering
 		meshes = new Mesh * [volume];
 		meshesSecond = new Mesh * [volume];
 
-		chunks[0] = new Chunk(0, 0, 0);
-		meshes[0] = nullptr;
-		for (size_t i = 1; i < volume; i++) {
+		for (size_t i = 0; i < volume; i++) {
 			chunks[i] = nullptr;
 			meshes[i] = nullptr;
 		}
@@ -162,6 +162,45 @@ namespace Rendering
 			return true;
 		}
 		return false;
+	}
+
+	bool Chunks::loadVisible()
+	{
+		int nearX = 0;
+		int nearY = 0;
+		int nearZ = 0;
+		int minDistance = 1000000000;
+		for (unsigned int y = 0; y < m_d; y++) {
+			for (unsigned int z = 1; z < m_h - 1; z++) {
+				for (unsigned int x = 1; x < m_w - 1; x++) {
+					int index = (y * m_d + z) * m_w + x;
+					Chunk* chunk = chunks[index];
+					if (chunk != nullptr)
+						continue;
+					int lx = x - m_w / 2;
+					int ly = y - m_h / 2;
+					int lz = z - m_d / 2;
+					int distance = (lx * lx + ly * ly + lz * lz);
+					if (distance < minDistance) {
+						minDistance = distance;
+						nearX = x;
+						nearY = y;
+						nearZ = z;
+					}
+				}
+			}
+		}
+
+		int index = (nearY * m_d + nearZ) * m_w + nearX;
+		Chunk* chunk = chunks[index];
+		if (chunk != nullptr)
+			return false;
+		chunk = new Chunk(nearX + ox, nearY + oy, nearZ + oz);
+		Game::WorldGenerator::generate(chunk->voxels, chunk->m_x, chunk->m_y, chunk->m_z);
+
+		chunks[index] = chunk;
+		Lighting::Lighting::onChunkLoaded(ox + nearX, oy + nearY, oz + nearZ);
+		return true;
 	}
 
 	Voxel* Chunks::get(int x, int y, int z)

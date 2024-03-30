@@ -17,6 +17,7 @@ set(PUBLIC_INCLUDES
 
 	src/Game/Game.hpp
 	src/Game/World.hpp
+	src/Game/WorldGenerator.hpp
 	src/Game/Player.hpp
 
 	src/Rendering/OpenGL/Window.hpp
@@ -47,6 +48,7 @@ set(PUBLIC_SOURCES
 
 	src/Game/Game.cpp
 	src/Game/World.cpp
+	src/Game/WorldGenerator.cpp
 	src/Game/Player.cpp
 
 	src/Rendering/OpenGL/Window.cpp

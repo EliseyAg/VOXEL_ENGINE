@@ -22,28 +22,28 @@ namespace Lighting
 
 	void Lighting::onChunkLoaded(int cx, int cy, int cz) {
 		Rendering::Chunk* chunk = chunks->getChunk(cx, cy, cz);
-		Rendering::Chunk* chunkUpper = chunks->getChunk(cx, cy + 1, cz);
-		Rendering::Chunk* chunkLower = chunks->getChunk(cx, cy - 1, cz);
+		Rendering::Chunk* chunkUpper = chunks->getChunk(cx, cy, cz + 1);
+		Rendering::Chunk* chunkLower = chunks->getChunk(cx, cy, cz - 1);
 		if (chunkLower) {
-			for (int z = 0; z < CHUNK_D; z++) {
+			for (int y = 0; y < CHUNK_D; y++) {
 				for (int x = 0; x < CHUNK_W; x++) {
 					int gx = x + cx * CHUNK_W;
-					int gy = cy * CHUNK_H;
-					int gz = z + cz * CHUNK_D;
+					int gy = y + cy * CHUNK_D;
+					int gz = cz * CHUNK_H;
 
-					int light = chunk->lightMap->getS(x, 0, z);
-					int ncy = cy - 1;
+					int light = chunk->lightMap->getS(x, y, 0);
+					int ncz = cz - 1;
 					if (light < 15) {
 						Rendering::Chunk* current = chunkLower;
-						if (chunkLower->lightMap->getS(x, 15, z) == 0)
+						if (chunkLower->lightMap->getS(x, y, 15) == 0)
 							continue;
-						for (int y = 15;; y--) {
-							if (y < 0) {
-								ncy--;
-								y += CHUNK_H;
+						for (int z = 15;; z--) {
+							if (z < 0) {
+								ncz--;
+								z += CHUNK_H;
 							}
-							if (ncy != current->m_y)
-								current = chunks->getChunk(cx, ncy, cz);
+							if (ncz != current->m_z)
+								current = chunks->getChunk(cx, cy, ncz);
 							if (!current)
 								break;
 							Rendering::Voxel* vox = &(current->voxels[(y * CHUNK_D + z) * CHUNK_W + x]);//chunks->get(gx,gy+y,gz);
@@ -52,7 +52,7 @@ namespace Lighting
 								break;
 							//current->lightMap->setS(x,y,z, 0);
 							current->modified = true;
-							solverS->remove(gx, y + ncy * CHUNK_H, gz);
+							solverS->remove(gx, gy, z + ncz * CHUNK_H);
 							current->lightMap->setS(x, y, z, 0);
 						}
 					}
@@ -60,24 +60,24 @@ namespace Lighting
 			}
 		}
 		if (chunkUpper) {
-			for (int z = 0; z < CHUNK_D; z++) {
+			for (int y = 0; y < CHUNK_D; y++) {
 				for (int x = 0; x < CHUNK_W; x++) {
 					int gx = x + cx * CHUNK_W;
-					int gy = cy * CHUNK_H;
-					int gz = z + cz * CHUNK_D;
-					int ncy = cy;
+					int gy = y + cy * CHUNK_D;
+					int gz = cz * CHUNK_H;
+					int ncz = cz;
 
-					int light = chunkUpper->lightMap->getS(x, 0, z);
+					int light = chunkUpper->lightMap->getS(x, y, 0);
 
 					Rendering::Chunk* current = chunk;
 					if (light == 15) {
-						for (int y = CHUNK_H - 1;; y--) {
-							if (y < 0) {
-								ncy--;
-								y += CHUNK_H;
+						for (int z = CHUNK_H - 1;; z--) {
+							if (z < 0) {
+								ncz--;
+								z += CHUNK_H;
 							}
-							if (ncy != current->m_y)
-								current = chunks->getChunk(cx, ncy, cz);
+							if (ncz != current->m_z)
+								current = chunks->getChunk(cx, cy, ncz);
 							if (!current)
 								break;
 							Rendering::Voxel* vox = &(current->voxels[(y * CHUNK_D + z) * CHUNK_W + x]);//chunks->get(gx,gy+y,gz);
@@ -86,30 +86,30 @@ namespace Lighting
 								break;
 							current->lightMap->setS(x, y, z, 15);
 							current->modified = true;
-							solverS->add(gx, y + ncy * CHUNK_H, gz);
+							solverS->add(gx, gy, z + ncz * CHUNK_H);
 						}
 					}
 					else if (light) {
-						solverS->add(gx, gy + CHUNK_H, gz);
+						solverS->add(gx, gy, ncz * CHUNK_H);
 					}
 				}
 			}
 		}
 		else {
-			for (int z = 0; z < CHUNK_D; z++) {
+			for (int y = 0; y < CHUNK_D; y++) {
 				for (int x = 0; x < CHUNK_W; x++) {
 					int gx = x + cx * CHUNK_W;
-					int gz = z + cz * CHUNK_D;
-					int ncy = cy;
+					int gy = y + cy * CHUNK_D;
+					int ncz = cz;
 
 					Rendering::Chunk* current = chunk;
-					for (int y = CHUNK_H - 1;; y--) {
-						if (y < 0) {
-							ncy--;
-							y += CHUNK_H;
+					for (int z = CHUNK_H - 1;; z--) {
+						if (z < 0) {
+							ncz--;
+							z += CHUNK_H;
 						}
-						if (ncy != current->m_y)
-							current = chunks->getChunk(cx, ncy, cz);
+						if (ncz != current->m_z)
+							current = chunks->getChunk(cx, cy, ncz);
 						if (!current)
 							break;
 						Rendering::Voxel* vox = &(current->voxels[(y * CHUNK_D + z) * CHUNK_W + x]);//chunks->get(gx,gy+y,gz);
@@ -118,7 +118,7 @@ namespace Lighting
 							break;
 						current->lightMap->setS(x, y, z, 15);
 						current->modified = true;
-						solverS->add(gx, y + ncy * CHUNK_H, gz);
+						solverS->add(gx, gy, z + ncz * CHUNK_H);
 					}
 				}
 			}

@@ -114,8 +114,9 @@ namespace Game
             //    break;
         }
 
-        world.getChunks()->setCenter(player.get_position().x, player.get_position().z, 0);
+        world.getChunks()->setCenter(player.get_position().x, player.get_position().y, player.get_position().z);
         world.getChunks()->buildMeshes(world.getRenderer());
+        world.getChunks()->loadVisible();
     }
 
     bool Game::init()
